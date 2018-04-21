@@ -67,8 +67,21 @@ $(document).ready(function() {
             }
 
             getNextPosition() {
-                var currentPosition = this.getHeadPosition();
-                // TODO
+                var currentPositionX, currentPositionY;
+                [currentPositionX, currentPositionY] = this.getHeadPosition();
+                if (this.currentDirection == UP) {
+                    currentPositionY -= 1;
+                }
+                else if (this.currentDirection == DOWN) {
+                    currentPositionY += 1;
+                }
+                else if (this.currentDirection == LEFT) {
+                    currentPositionX -= 1;
+                }
+                else if (this.currentDirection == RIGHT) {
+                    currentPositionX += 1;
+                }
+                return [currentPositionX, currentPositionY];
             }
 
             move(nextX, nextY) {
