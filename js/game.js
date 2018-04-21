@@ -7,6 +7,25 @@ $(document).ready(function() {
     const GRIDSIZE = gameWidth/17.2;
     const LINESIZE = GRIDSIZE/10;
 
+    class SnakeFactory{
+        constructor(container) {
+            this.container = container;
+            this.allSnakes = [];
+        }
+
+        createSnake(x, y, letter) {
+            let newSnake = new Snake(
+                '',
+                [
+                    new Tile(x, y, letter, this.container),
+                ],
+                this.container,
+            )
+            this.allSnakes.push(newSnake);
+            return newSnake
+        }
+    }
+
     function keyboard(keyCode) {
         let key = {};
         key.code = keyCode;
@@ -45,6 +64,7 @@ $(document).ready(function() {
 
     const UP = 'up', DOWN = 'down', LEFT = 'left', RIGHT = 'right';
     let snake;
+    var snakeCreator;
     let upKey = keyboard(38); // up
     let downKey = keyboard(40); // down
     let leftKey = keyboard(37); // left
@@ -83,7 +103,12 @@ $(document).ready(function() {
         setUpImage(container) {
             // create a new Sprite from an image path
             let image = PIXI.Sprite.fromImage(`static/${this.letter}.svg`);
-
+            image.interactive = true;
+            image.buttonMode = true;
+            image.on('click', (event) => {
+                snakeCreator.createSnake(this.x, this.y, this.letter);
+            });
+             
             // center the sprite's anchor point
             image.anchor.set(0);
 
@@ -118,6 +143,7 @@ $(document).ready(function() {
             this.currentDirection = currentDirection;
             this.snakeTiles = snakeTiles;
             this.container = container;
+            self.isDead = false;
             setUpControls(this);
         }
 
@@ -190,8 +216,11 @@ $(document).ready(function() {
         }
 
         die() {
-            disableControls(this.snake);
-            alert("YOU LOSE");
+            if (!self.isDead) {
+                self.isDead = true;
+                disableControls(this.snake);
+                alert("YOU LOSE");
+            }
         }
     }
 
@@ -203,7 +232,7 @@ $(document).ready(function() {
             var grid = [
                 '               ',
                 '               ',
-                '          R    ',
+                '          R V  ',
                 '          E E  ',
                 '       SERPENT ',
                 '       N  T O  ',
@@ -232,17 +261,7 @@ $(document).ready(function() {
                 this.grid.push(innerArray)
             }
 
-            this.snake = new Snake(
-                '',
-                [
-                    new Tile(12, 2, 'V', snakeContainer),
-                    // new Tile(12, 6, 'I', stage),
-                    // new Tile(12, 7, 'N', stage),
-                    // new Tile(11, 7, 'C', stage),
-                    // new Tile(10, 7, 'E', stage),
-                ],
-                snakeContainer
-            )
+            snakeCreator = new SnakeFactory(snakeContainer);
         }
 
         getTile(x, y) {
@@ -268,7 +287,6 @@ $(document).ready(function() {
         }
 
         isAlreadySnakeTile(x, y) {
-            //
             return this.snake.snakeTiles.filter(
                 snakeTile => snakeTile.x == x && snakeTile.y == y
             ).length > 0;
@@ -281,10 +299,16 @@ $(document).ready(function() {
 
         update(renderer) {
             var x, y;
+            if (!this.snake && !snakeCreator.allSnakes[0]) {
+                return;
+            }
+            this.snake = snakeCreator.allSnakes[0];
             ({x, y} = this.snake.getNextPosition());
             console.log(this.snake.getName());
-            console.log(this.isAlreadySnakeTile(x, y));
-            if (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y)) {
+
+            let snakeHasMoved = this.snake.currentDirection;
+            let snakeShouldDie = (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y));
+            if (snakeHasMoved && snakeShouldDie) {
                 this.snake.die();
             } else if (this.isOpenPosition(x, y)) {
                 this.snake.move(x, y);
@@ -296,13 +320,6 @@ $(document).ready(function() {
     }
 
     var setUp = function() {
-        // create canvas view
-        // create gameboard grid
-        // create snake
-
-        var gameWord = ['V', 'S', 'L'];
-
-        // Create visual stuff
 
         let renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
 
@@ -315,7 +332,9 @@ $(document).ready(function() {
         backgroundGrid.height = BACKGROUND_SIZE;
 
         let boardContainer = new PIXI.Container();
+        boardContainer.name = 'boardContainer';
         let snakeContainer = new PIXI.Container();
+        snakeContainer.name = 'snakeContainer';
 
         stage.addChild(backgroundGrid);
         stage.addChild(boardContainer);
