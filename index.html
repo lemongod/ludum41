@@ -1,16 +1,95 @@
-<script src="https://pixijs.download/release/pixi.min.js"></script>
+<html>
+    <head>
+      <script src="https://pixijs.download/release/pixi.min.js"></script>
+    </head>
 
-<body>
-  <script>
-    var app = new PIXI.Application({ width: 640, height: 360 });
-    document.body.appendChild(app.view);
-    var circle = new PIXI.Graphics();
-    circle.beginFill(0x5cafe2);
-    circle.drawCircle(0, 0, 80);
-    circle.x = 320;
-    circle.y = 180;
-    app.stage.addChild(circle);
-  </script>
-</body>
+    <body>
+      <script>
+        var app = new PIXI.Application(640, 360);
+        document.body.appendChild(app.view);
+        
+
+        function keyboard(keyCode) {
+          let key = {};
+          key.code = keyCode;
+          key.isDown = false;
+          key.isUp = true;
+          key.press = undefined;
+          key.release = undefined;
+          //The `downHandler`
+          key.downHandler = event => {
+            if (event.keyCode === key.code) {
+              if (key.isUp && key.press) key.press();
+              key.isDown = true;
+              key.isUp = false;
+            }
+            event.preventDefault();
+          };
+
+          //The `upHandler`
+          key.upHandler = event => {
+            if (event.keyCode === key.code) {
+              if (key.isDown && key.release) key.release();
+              key.isDown = false;
+              key.isUp = true;
+            }
+            event.preventDefault();
+          };
+
+          //Attach event listeners
+          window.addEventListener(
+            "keydown", key.downHandler.bind(key), false
+          );
+          window.addEventListener(
+            "keyup", key.upHandler.bind(key), false
+          );
+          return key;
+        }
+
+        var circle = new PIXI.Graphics();
+        circle.beginFill(0x5cafe2);
+        circle.drawCircle(0, 0, 80);
+        circle.x = 320;
+        circle.y = 180;
+        app.stage.addChild(circle);
+
+        let upKey = keyboard(38); // up
+        upKey.press = () => {
+          console.log('poo');
+          circle.y -= 10
+        };
+        upKey.release = () => {
+        };
+
+        let downKey = keyboard(40); // down
+        downKey.press = () => {
+          console.log('poo');
+          circle.y += 10
+        };
+        downKey.release = () => {
+        };
+
+        let leftKey = keyboard(37); // left
+        leftKey.press = () => {
+          console.log('poo');
+          circle.x -= 10
+        };
+        leftKey.release = () => {
+        };
+
+        let rightKey = keyboard(39); // right
+        rightKey.press = () => {
+          console.log('poo');
+          circle.x += 10
+        };
+        rightKey.release = () => {
+        };
+
+
+      </script>
+    </body>
+
+</html>
 
 <!-- https://github.com/pixijs/pixi.js/wiki/Getting-Started -->
+<!-- https://github.com/kittykatattack/learningPixi#keyboard -->
