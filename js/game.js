@@ -3,7 +3,11 @@ $(document).ready(function() {
     var $gameContainer = $(".gameContainer");
     var gameWidth =  $gameContainer.innerWidth();
 
-    const BACKGROUND_SIZE = gameWidth;
+    const BACKGROUND_Y_OFFSET = 200;
+
+    const BACKGROUND_SIZE_X = gameWidth;
+    const BACKGROUND_SIZE_Y = gameWidth + BACKGROUND_Y_OFFSET;
+
     const GRIDSIZE = gameWidth/17.2;
     const LINESIZE = GRIDSIZE/10;
 
@@ -119,7 +123,7 @@ $(document).ready(function() {
 
             // move the sprite to the top left
             image.x = this.coordinateToGrid(this.x);
-            image.y = this.coordinateToGrid(this.y);
+            image.y = this.coordinateToGrid(this.y) + BACKGROUND_Y_OFFSET;
             image.height = GRIDSIZE;
             image.width = GRIDSIZE;
 
@@ -140,7 +144,7 @@ $(document).ready(function() {
 
         setY(y) {
             this.y = y;
-            this.image.y = this.coordinateToGrid(y);
+            this.image.y = this.coordinateToGrid(y) + BACKGROUND_Y_OFFSET;
         }
     }
 
@@ -230,10 +234,58 @@ $(document).ready(function() {
         }
     }
 
+    class HUD {
+        constructor(container) {
+            this.container = container;
+            this.titleText = 'Welcome to Scrabble 2';
+            this.subText = 'Pick a letter to get started.';
+            this.wordText = 'GAMGGGGGG';
+
+            this.titleElement = this.createTitleElement();
+            this.subElement = this.createSubElement();
+        }
+
+        getStyle(fontSize) {
+            return {
+                fontFamily : 'Helvetica',
+                fontSize: fontSize,
+                fill : 0x000000,
+                align : 'center'
+            }
+        }
+
+        createTitleElement() {
+            var element = new PIXI.Text(
+                this.titleText,
+                this.getStyle(24),
+            );
+            element.x = 100;
+            element.y = 100;
+
+            this.container.addChild(element);
+            return element;
+        }
+
+        createSubElement() {
+            var element = new PIXI.Text(
+                this.subText,
+                this.getStyle(18),
+            );
+            element.x = 100;
+            element.y = 150;
+
+            this.container.addChild(element);
+            return element;
+        }
+
+    }
+
     class Board {
-        constructor(boardContainer, snakeContainer) {
+        constructor(boardContainer, snakeContainer, hudContainer) {
 
             this.container = boardContainer;
+
+            this.hud = new HUD(hudContainer);
 
             var grid = [
                 '               ',
@@ -324,26 +376,29 @@ $(document).ready(function() {
         }
     }
 
-    var setUp = function() {
+    function setUp() {
 
-        let renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
+        let renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE_X, BACKGROUND_SIZE_Y, {backgroundColor: 0xffffff});
 
         // Create the stage
-        let stage = new PIXI.Container();
+        let stage = new PIXI.Container(name='stage');
         $gameContainer.append(renderer.view);
 
         let backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
-        backgroundGrid.width = BACKGROUND_SIZE;
-        backgroundGrid.height = BACKGROUND_SIZE;
+        backgroundGrid.y = BACKGROUND_Y_OFFSET;
+        backgroundGrid.width = BACKGROUND_SIZE_X;
+        backgroundGrid.height = BACKGROUND_SIZE_X;
 
         let boardContainer = new PIXI.Container(name='boardContainer');
         let snakeContainer = new PIXI.Container(name='snakeContainer');
+        let hudContainer = new PIXI.Container(name='hudContainer');
 
-        stage.addChildAt(backgroundGrid, 0);
-        stage.addChildAt(boardContainer, 1);
-        stage.addChildAt(snakeContainer, 2);
+        stage.addChild(backgroundGrid);
+        stage.addChild(boardContainer);
+        stage.addChild(snakeContainer);
+        stage.addChild(hudContainer);
 
-        board = new Board(boardContainer, snakeContainer);
+        board = new Board(boardContainer, snakeContainer, hudContainer);
 
         const ticker = new PIXI.ticker.Ticker();
         ticker.add((delta) => gameLoop(delta, renderer, stage, board));
