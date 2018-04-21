@@ -80,6 +80,75 @@ $(document).ready(function() {
         rightKey.release = () => {};
     }
 
+    class SnakeTile {
+        constructor(x, y, letter) {
+            this.x = x;
+            this.y = y;
+            this.letter = letter;
+        }
+    }
+
+    class Snake {
+        constructor(currentDirection, snakeTiles) {
+            this.currentDirection = currentDirection;
+            this.snakeTiles = snakeTiles;
+        }
+
+        getHead() {
+            return this.snakeTiles[0];
+        }
+
+        getHeadPosition() {
+            return {
+                x: this.getHead().x,
+                y: this.getHead().y
+            }
+        }
+
+        getNextPosition() {
+            var x, y;
+            ({x, y} = this.getHeadPosition());
+            debugger;
+            if (this.currentDirection == UP) {
+                y -= 1;
+            }
+            else if (this.currentDirection == DOWN) {
+                y += 1;
+            }
+            else if (this.currentDirection == LEFT) {
+                x -= 1;
+            }
+            else if (this.currentDirection == RIGHT) {
+                x += 1;
+            }
+            return {
+                x: x, 
+                y: y,
+            };
+        }
+
+        move(nextX, nextY) {
+            var head = this.snakeTiles[0];
+            
+            var prevX = head.x;
+            var prevY = head.y;
+
+            for (var i = 1; i < this.snakeTiles.length; i++) {
+                var thisPrevX = this.snakeTiles[i].x;
+                var thisPrevY = this.snakeTiles[i].y;
+
+                this.snakeTiles[i].x = prevX;
+                this.snakeTiles[i].y = prevY;
+
+                prevX = thisPrevX;
+                prevY = thisPrevY;
+            }
+
+            head.x = nextX;
+            head.y = nextY;
+        }
+    }
+
     class Board {
         constructor() {
             this.grid = [
@@ -106,74 +175,6 @@ $(document).ready(function() {
         // create canvas view
         // create gameboard grid
         // create snake
-        class SnakeTile {
-            constructor(x, y, letter) {
-                this.x = x;
-                this.y = y;
-                this.letter = letter;
-            }
-        }
-
-        class Snake {
-            constructor(currentDirection, snakeTiles) {
-                this.currentDirection = currentDirection;
-                this.snakeTiles = snakeTiles;
-            }
-
-            getHead() {
-                return this.snakeTiles[0];
-            }
-
-            getHeadPosition() {
-                return {
-                    x: this.getHead().x,
-                    y: this.getHead().y
-                }
-            }
-
-            getNextPosition() {
-                var x, y;
-                ({x, y} = this.getHeadPosition());
-                debugger;
-                if (this.currentDirection == UP) {
-                    y -= 1;
-                }
-                else if (this.currentDirection == DOWN) {
-                    y += 1;
-                }
-                else if (this.currentDirection == LEFT) {
-                    x -= 1;
-                }
-                else if (this.currentDirection == RIGHT) {
-                    x += 1;
-                }
-                return {
-                    x: x, 
-                    y: y,
-                };
-            }
-
-            move(nextX, nextY) {
-                var head = this.snakeTiles[0];
-                
-                var prevX = head.x;
-                var prevY = head.y;
-
-                for (var i = 1; i < this.snakeTiles.length; i++) {
-                    var thisPrevX = this.snakeTiles[i].x;
-                    var thisPrevY = this.snakeTiles[i].y;
-
-                    this.snakeTiles[i].x = prevX;
-                    this.snakeTiles[i].y = prevY;
-
-                    prevX = thisPrevX;
-                    prevY = thisPrevY;
-                }
-
-                head.x = nextX;
-                head.y = nextY;
-            }
-        }
     
         var gameWord = ['V', 'S', 'L'];
     
