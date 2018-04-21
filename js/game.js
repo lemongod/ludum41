@@ -44,47 +44,76 @@ $(document).ready(function() {
     const UP = 'up', DOWN = 'down', LEFT = 'left', RIGHT = 'right';
     let snake;
 
-    function setUpControls(letterImage, stage) {
-        let upKey = keyboard(38); // up
-        upKey.press = () => {
-            if (letterImage.y >= (GRIDSIZE * 2)) {
-                letterImage.y -= GRIDSIZE
-            }
-        };
-        upKey.release = () => {};
+    // function setUpControls(letterImage, stage) {
+    //     let upKey = keyboard(38); // up
+    //     upKey.press = () => {
+    //         if (letterImage.y >= (GRIDSIZE * 2)) {
+    //             letterImage.y -= GRIDSIZE
+    //         }
+    //     };
+    //     upKey.release = () => {};
 
-        let downKey = keyboard(40); // down
-        downKey.press = () => {
-            var lowerBound = stage.height - GRIDSIZE * 3
-            if (letterImage.y <= lowerBound) {
-                letterImage.y += GRIDSIZE
-            }
-        };
-        downKey.release = () => {};
+    //     let downKey = keyboard(40); // down
+    //     downKey.press = () => {
+    //         var lowerBound = stage.height - GRIDSIZE * 3
+    //         if (letterImage.y <= lowerBound) {
+    //             letterImage.y += GRIDSIZE
+    //         }
+    //     };
+    //     downKey.release = () => {};
 
-        let leftKey = keyboard(37); // left
-        leftKey.press = () => {
-            if (letterImage.x >= (GRIDSIZE * 2)) {
-                letterImage.x -= GRIDSIZE
-            }        
-        };
-        leftKey.release = () => {};
+    //     let leftKey = keyboard(37); // left
+    //     leftKey.press = () => {
+    //         if (letterImage.x >= (GRIDSIZE * 2)) {
+    //             letterImage.x -= GRIDSIZE
+    //         }        
+    //     };
+    //     leftKey.release = () => {};
 
-        let rightKey = keyboard(39); // right
-        rightKey.press = () => {
-            var upperBound = stage.height - GRIDSIZE * 3
-            if (letterImage.x <= upperBound) {
-                letterImage.x += GRIDSIZE
-            }        
-        };
-        rightKey.release = () => {};
-    }
+    //     let rightKey = keyboard(39); // right
+    //     rightKey.press = () => {
+    //         var upperBound = stage.height - GRIDSIZE * 3
+    //         if (letterImage.x <= upperBound) {
+    //             letterImage.x += GRIDSIZE
+    //         }        
+    //     };
+    //     rightKey.release = () => {};
+    // }
 
     class SnakeTile {
-        constructor(x, y, letter) {
+        constructor(x, y, letter, stage) {
             this.x = x;
             this.y = y;
             this.letter = letter;
+            this.image = this.setUpImage(stage);
+        }
+
+        setUpImage(stage) {
+            // create a new Sprite from an image path
+            var image = PIXI.Sprite.fromImage(`static/${this.letter}.svg`);
+
+            // center the sprite's anchor point
+            image.anchor.set(0);
+
+            // move the sprite to the top left
+            image.x = GRIDSIZE*this.x + LINESIZE;
+            image.y = GRIDSIZE*this.y + LINESIZE;
+            image.height = GRIDSIZE;
+            image.width = GRIDSIZE;
+
+            stage.addChild(image);
+
+            return image
+        }
+
+        setX(x) {
+            this.x = x;
+            this.image.x = GRIDSIZE * x + LINESIZE;
+        }
+
+        setY(y) {
+            this.y = y;
+            this.image.y = GRIDSIZE * y + LINESIZE;
         }
     }
 
@@ -108,7 +137,6 @@ $(document).ready(function() {
         getNextPosition() {
             var x, y;
             ({x, y} = this.getHeadPosition());
-            debugger;
             if (this.currentDirection == UP) {
                 y -= 1;
             }
@@ -137,20 +165,20 @@ $(document).ready(function() {
                 var thisPrevX = this.snakeTiles[i].x;
                 var thisPrevY = this.snakeTiles[i].y;
 
-                this.snakeTiles[i].x = prevX;
-                this.snakeTiles[i].y = prevY;
+                this.snakeTiles[i].setX(prevX);
+                this.snakeTiles[i].setY(prevY);
 
                 prevX = thisPrevX;
                 prevY = thisPrevY;
             }
 
-            head.x = nextX;
-            head.y = nextY;
+            head.setX(nextX);
+            head.setY(nextY);
         }
     }
 
     class Board {
-        constructor() {
+        constructor(stage) {
             this.grid = [
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
@@ -168,6 +196,17 @@ $(document).ready(function() {
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
             ]
+
+            this.snake = new Snake(
+                UP,
+                [new SnakeTile(12, 5, 'V', stage)]
+            )
+        }
+
+        update(renderer, stage) {
+            var x, y;
+            ({x, y} = this.snake.getNextPosition());
+            this.snake.move(x, y);
         }
     }
 
@@ -178,12 +217,6 @@ $(document).ready(function() {
     
         var gameWord = ['V', 'S', 'L'];
     
-        // initial solid snaaaaaake
-        var snake = new Snake(
-            UP,
-            [new SnakeTile(12, 5, 'V')]
-        )
-
         // Create visual stuff
 
         var renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
@@ -197,28 +230,17 @@ $(document).ready(function() {
         backgroundGrid.height = BACKGROUND_SIZE;
         stage.addChild(backgroundGrid);
 
-        // create a new Sprite from an image path
-        var letterImage = PIXI.Sprite.fromImage('static/G.svg');
+        board = new Board(stage);
 
-        // center the sprite's anchor point
-        letterImage.anchor.set(0);
-
-        // move the sprite to the top left
-        letterImage.x = GRIDSIZE + LINESIZE;
-        letterImage.y = GRIDSIZE + LINESIZE;
-        letterImage.height = GRIDSIZE;
-        letterImage.width = GRIDSIZE;
-
-        stage.addChild(letterImage);
-
-        setUpControls(letterImage, stage);
-
-        board = new Board();
-
-        gameLoop(renderer, stage, board);
+        const ticker = new PIXI.ticker.Ticker();
+        ticker.add((delta) => gameLoop(delta, renderer, stage, board));
+        ticker.start();
     }
 
-    var gameLoop = function(renderer, stage, board) {
+    const TICK_SPEED = 500;
+    var timeSinceLastTick = 0;
+
+    function gameLogic(renderer, stage, board) {
         // headSnake asks for next snake position (based on last direction input)
         // check for open tile/out of bounds tile/own tail/another letter tile
         // if open tile, move into it, shift all letters into the position of the next letter in the snake array
@@ -226,9 +248,19 @@ $(document).ready(function() {
         // if own tail, die
         // if another letter tile, move into it and add the letter to the tail, remove letter from gameboard
         //    check state of current word, if it cannot match gameWord, die
-        // console.log('hello ' + delta);
+        board.update(renderer, stage);
+    }
+
+    function gameLoop(delta, renderer, stage, board) {
+
+        timeSinceLastTick += delta;
+        if (timeSinceLastTick > TICK_SPEED) {
+            timeSinceLastTick = 0;
+            gameLogic(renderer, stage, board);
+        }
+
         renderer.render(stage);
-        requestAnimationFrame(() => gameLoop(renderer, stage, board));
+        requestAnimationFrame(() => gameLoop(delta, renderer, stage, board));
     }
 
     setUp();
