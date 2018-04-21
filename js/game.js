@@ -113,7 +113,7 @@ $(document).ready(function() {
         ]
     
         // initial solid snaaaaaake
-        var snake = Snake(
+        var snake = new Snake(
             UP,
             [new SnakeTile(12, 5, 'V')]
         )
