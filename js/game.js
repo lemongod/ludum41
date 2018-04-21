@@ -125,36 +125,43 @@ $(document).ready(function() {
             }
 
             getHeadPosition() {
-                return [this.getHead().x, this.getHead().y];
+                return {
+                    x: this.getHead().x,
+                    y: this.getHead().y
+                }
             }
 
             getNextPosition() {
-                var currentPositionX, currentPositionY;
-                [currentPositionX, currentPositionY] = this.getHeadPosition();
+                var x, y;
+                ({x, y} = this.getHeadPosition());
+                debugger;
                 if (this.currentDirection == UP) {
-                    currentPositionY -= 1;
+                    y -= 1;
                 }
                 else if (this.currentDirection == DOWN) {
-                    currentPositionY += 1;
+                    y += 1;
                 }
                 else if (this.currentDirection == LEFT) {
-                    currentPositionX -= 1;
+                    x -= 1;
                 }
                 else if (this.currentDirection == RIGHT) {
-                    currentPositionX += 1;
+                    x += 1;
                 }
-                return [currentPositionX, currentPositionY];
+                return {
+                    x: x, 
+                    y: y,
+                };
             }
 
             move(nextX, nextY) {
-                head = this.snakeTiles[0];
+                var head = this.snakeTiles[0];
                 
-                prevX = head.x;
-                prevY = head.y;
+                var prevX = head.x;
+                var prevY = head.y;
 
-                for (i = 1; i < this.snakeTiles.length; i++) {
-                    thisPrevX = this.snakeTiles[i].x;
-                    thisPrevY = this.snakeTiles[i].y;
+                for (var i = 1; i < this.snakeTiles.length; i++) {
+                    var thisPrevX = this.snakeTiles[i].x;
+                    var thisPrevY = this.snakeTiles[i].y;
 
                     this.snakeTiles[i].x = prevX;
                     this.snakeTiles[i].y = prevY;
