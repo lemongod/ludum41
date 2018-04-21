@@ -188,12 +188,9 @@ $(document).ready(function() {
     }
 
     class Board {
-        constructor(stage) {
+        constructor(boardContainer, snakeContainer) {
 
-            this.container = new PIXI.Container();
-            var snakeContainer = new PIXI.Container();
-            stage.addChild(this.container);
-            stage.addChild(snakeContainer);
+            this.container = boardContainer;
 
             var grid = [
                 '               ',
@@ -299,9 +296,14 @@ $(document).ready(function() {
         backgroundGrid.width = BACKGROUND_SIZE;
         backgroundGrid.height = BACKGROUND_SIZE;
 
-        stage.addChild(backgroundGrid);
+        var boardContainer = new PIXI.Container();
+        var snakeContainer = new PIXI.Container();
 
-        board = new Board(stage);
+        stage.addChild(backgroundGrid);
+        stage.addChild(boardContainer);
+        stage.addChild(snakeContainer);
+
+        board = new Board(boardContainer, snakeContainer);
 
         const ticker = new PIXI.ticker.Ticker();
         ticker.add((delta) => gameLoop(delta, renderer, stage, board));
@@ -311,7 +313,7 @@ $(document).ready(function() {
     const TICK_SPEED = 10;
     var timeSinceLastTick = 0;
 
-    function gameLogic(renderer, stage, board) {
+    function gameLogic(renderer, board) {
         // headSnake asks for next snake position (based on last direction input)
         // check for open tile/out of bounds tile/own tail/another letter tile
         // if open tile, move into it, shift all letters into the position of the next letter in the snake array
@@ -319,14 +321,14 @@ $(document).ready(function() {
         // if own tail, die
         // if another letter tile, move into it and add the letter to the tail, remove letter from gameboard
         //    check state of current word, if it cannot match gameWord, die
-        board.update(renderer, stage);
+        board.update(renderer);
     }
 
     function gameLoop(delta, renderer, stage, board) {
         timeSinceLastTick += delta;
         if (timeSinceLastTick > TICK_SPEED) {
             timeSinceLastTick = 0;
-            gameLogic(renderer, stage, board);
+            gameLogic(renderer, board);
         }
 
         renderer.render(stage);
