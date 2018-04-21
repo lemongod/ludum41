@@ -3,8 +3,6 @@ $(document).ready(function() {
     var $gameContainer = $(".gameContainer");
     var gameWidth =  $gameContainer.innerWidth();
 
-    console.log(gameWidth);
-
     const BACKGROUND_SIZE = gameWidth;
     const GRIDSIZE = gameWidth/17.2;
     const LINESIZE = GRIDSIZE/10;
@@ -76,14 +74,14 @@ $(document).ready(function() {
     }
 
     class Tile {
-        constructor(x, y, letter, stage) {
+        constructor(x, y, letter, container) {
             this.x = x;
             this.y = y;
             this.letter = letter;
-            this.image = this.setUpImage(stage);
+            this.image = this.setUpImage(container);
         }
 
-        setUpImage(stage) {
+        setUpImage(container) {
             // create a new Sprite from an image path
             var image = PIXI.Sprite.fromImage(`static/${this.letter}.svg`);
 
@@ -96,7 +94,7 @@ $(document).ready(function() {
             image.height = GRIDSIZE;
             image.width = GRIDSIZE;
 
-            stage.addChild(image);
+            container.addChild(image);
 
             return image
         }
@@ -113,9 +111,10 @@ $(document).ready(function() {
     }
 
     class Snake {
-        constructor(currentDirection, snakeTiles) {
+        constructor(currentDirection, snakeTiles, container) {
             this.currentDirection = currentDirection;
             this.snakeTiles = snakeTiles;
+            this.container = container;
             setUpControls(this);
         }
 
@@ -130,15 +129,13 @@ $(document).ready(function() {
         getHeadPosition() {
             return {
                 x: this.getHead().x,
-                y: this.getHead().y
+                y: this.getHead().y,
             }
         }
 
         getName() {
-            return this.snakeTiles.reduce(
-                (name, tile) => (name + tile.letter),
-                ''
-            )
+            const reducer = (name, tile) => (name + tile.letter);
+            return this.snakeTiles.reduce(reducer, '');
         }
 
         getNextPosition() {
@@ -183,21 +180,20 @@ $(document).ready(function() {
             head.setY(nextY);
         }
 
-        eat(nextX, nextY, nextTile, stage, board) {
+        eat(nextX, nextY, nextTile, board) {
             board.removeTile(nextTile);
             this.move(nextX, nextY);
-            this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, stage));
-            // TODO put head on top of removed tile
+            this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, this.container));
         }
     }
 
     class Board {
         constructor(stage) {
 
-            this.boardContainer = new PIXI.Container();
-            this.snakeContainer = new PIXI.Container();
-            stage.addChild(this.boardContainer);
-            stage.addChild(this.snakeContainer);
+            this.container = new PIXI.Container();
+            var snakeContainer = new PIXI.Container();
+            stage.addChild(this.container);
+            stage.addChild(snakeContainer);
 
             var grid = [
                 '               ',
@@ -222,7 +218,7 @@ $(document).ready(function() {
                 var innerArray = [];
                 for (var k = 0; k < grid[i].length; k++) {
                     if (grid[i][k] !== ' '){ 
-                        innerArray.push(new Tile(k, i, grid[i][k], this.boardContainer));
+                        innerArray.push(new Tile(k, i, grid[i][k], this.container));
                     }
                     else {
                         innerArray.push(' ');
@@ -234,12 +230,13 @@ $(document).ready(function() {
             this.snake = new Snake(
                 UP,
                 [
-                    new Tile(12, 2, 'V', this.snakeContainer),
+                    new Tile(12, 2, 'V', snakeContainer),
                     // new Tile(12, 6, 'I', stage),
                     // new Tile(12, 7, 'N', stage),
                     // new Tile(11, 7, 'C', stage),
                     // new Tile(10, 7, 'E', stage),
-                ]
+                ],
+                snakeContainer
             )
         }
 
@@ -266,19 +263,19 @@ $(document).ready(function() {
         }
 
         removeTile(tile) {
-            this.boardContainer.removeChild(tile.image);
-            this.grid[tile.x][tile.y] = ' ';
+            this.container.removeChild(tile.image);
+            this.grid[tile.y][tile.x] = ' ';
         }
 
-        update(renderer, stage) {
+        update(renderer) {
             var x, y;
             ({x, y} = this.snake.getNextPosition());
-            console.log(this.snake.getName())
+            console.log(this.snake.getName());
             if (this.isOpenPosition(x, y)) {
                 this.snake.move(x, y);
             } else if (this.isLetterTile(x, y)) {
                 var nextTile = this.getTile(x, y);
-                this.snake.eat(x, y, nextTile, stage, this);
+                this.snake.eat(x, y, nextTile, this);
             }
         }
     }
