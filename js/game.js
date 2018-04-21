@@ -1,5 +1,9 @@
 $(document).ready(function() {
 
+    const BACKGROUND_SIZE = 860;
+    const GRIDSIZE = 50;
+    const LINESIZE = 5;
+
     function keyboard(keyCode) {
         let key = {};
         key.code = keyCode;
@@ -39,6 +43,42 @@ $(document).ready(function() {
 
     const UP = 'up', DOWN = 'down', LEFT = 'left', RIGHT = 'right';
     let snake;
+
+    function setUpControls(letterImage, stage) {
+        let upKey = keyboard(38); // up
+        upKey.press = () => {
+            if (letterImage.y >= (GRIDSIZE * 2)) {
+                letterImage.y -= GRIDSIZE
+            }
+        };
+        upKey.release = () => {};
+
+        let downKey = keyboard(40); // down
+        downKey.press = () => {
+            var lowerBound = stage.height - GRIDSIZE * 3
+            if (letterImage.y <= lowerBound) {
+                letterImage.y += GRIDSIZE
+            }
+        };
+        downKey.release = () => {};
+
+        let leftKey = keyboard(37); // left
+        leftKey.press = () => {
+            if (letterImage.x >= (GRIDSIZE * 2)) {
+                letterImage.x -= GRIDSIZE
+            }        
+        };
+        leftKey.release = () => {};
+
+        let rightKey = keyboard(39); // right
+        rightKey.press = () => {
+            var upperBound = stage.height - GRIDSIZE * 3
+            if (letterImage.x <= upperBound) {
+                letterImage.x += GRIDSIZE
+            }        
+        };
+        rightKey.release = () => {};
+    }
 
     var setUp = function() {
         // create canvas view
@@ -133,18 +173,15 @@ $(document).ready(function() {
 
         // Create visual stuff
 
-        var renderer = PIXI.autoDetectRenderer(860, 860);
+        var renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
 
         // Create the stage
         var stage = new PIXI.Container();
         document.body.appendChild(renderer.view);
 
-        const GRIDSIZE = 50;
-        const LINESIZE = 5;
-
         var backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
-        backgroundGrid.width = 860;
-        backgroundGrid.height = 860;
+        backgroundGrid.width = BACKGROUND_SIZE;
+        backgroundGrid.height = BACKGROUND_SIZE;
         stage.addChild(backgroundGrid);
 
         // create a new Sprite from an image path
@@ -161,39 +198,7 @@ $(document).ready(function() {
 
         stage.addChild(letterImage);
 
-        let upKey = keyboard(38); // up
-        upKey.press = () => {
-            if (letterImage.y >= (GRIDSIZE * 2)) {
-                letterImage.y -= GRIDSIZE
-            }
-        };
-        upKey.release = () => {};
-
-        let downKey = keyboard(40); // down
-        downKey.press = () => {
-            var lowerBound = stage.height - GRIDSIZE * 3
-            if (letterImage.y <= lowerBound) {
-                letterImage.y += GRIDSIZE
-            }
-        };
-        downKey.release = () => {};
-
-        let leftKey = keyboard(37); // left
-        leftKey.press = () => {
-            if (letterImage.x >= (GRIDSIZE * 2)) {
-                letterImage.x -= GRIDSIZE
-            }        
-        };
-        leftKey.release = () => {};
-
-        let rightKey = keyboard(39); // right
-        rightKey.press = () => {
-            var upperBound = stage.height - GRIDSIZE * 3
-            if (letterImage.x <= upperBound) {
-                letterImage.x += GRIDSIZE
-            }        
-        };
-        rightKey.release = () => {};
+        setUpControls(letterImage, stage);
 
         gameLoop(renderer, stage);
     }
