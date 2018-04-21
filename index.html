@@ -5,9 +5,8 @@
 
     <body>
       <script>
-        var app = new PIXI.Application(640, 360);
+        var app = new PIXI.Application(1500, 1000);
         document.body.appendChild(app.view);
-        
 
         function keyboard(keyCode) {
           let key = {};
@@ -46,45 +45,45 @@
           return key;
         }
 
-        var circle = new PIXI.Graphics();
-        circle.beginFill(0x5cafe2);
-        circle.drawCircle(0, 0, 80);
-        circle.x = 320;
-        circle.y = 180;
-        app.stage.addChild(circle);
+        const GRIDSIZE = 50;
+        
+        // create a new Sprite from an image path
+        var letterImage = PIXI.Sprite.fromImage('G.svg')
+
+        // center the sprite's anchor point
+        letterImage.anchor.set(1);
+
+        // move the sprite to the center of the screen
+        letterImage.x = app.screen.width;
+        letterImage.y = app.screen.height;
+        letterImage.height = GRIDSIZE;
+        letterImage.width = GRIDSIZE;
+
+        app.stage.addChild(letterImage);
 
         let upKey = keyboard(38); // up
         upKey.press = () => {
-          console.log('poo');
-          circle.y -= 10
+          letterImage.y -= GRIDSIZE
         };
-        upKey.release = () => {
-        };
+        upKey.release = () => {};
 
         let downKey = keyboard(40); // down
         downKey.press = () => {
-          console.log('poo');
-          circle.y += 10
+          letterImage.y += GRIDSIZE
         };
-        downKey.release = () => {
-        };
+        downKey.release = () => {};
 
         let leftKey = keyboard(37); // left
         leftKey.press = () => {
-          console.log('poo');
-          circle.x -= 10
+          letterImage.x -= GRIDSIZE
         };
-        leftKey.release = () => {
-        };
+        leftKey.release = () => {};
 
         let rightKey = keyboard(39); // right
         rightKey.press = () => {
-          console.log('poo');
-          circle.x += 10
+          letterImage.x += GRIDSIZE
         };
-        rightKey.release = () => {
-        };
-
+        rightKey.release = () => {};
 
       </script>
     </body>
