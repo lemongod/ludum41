@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="175px" height="182px" viewBox="0 0 175 182" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-3" transform="translate(0.000000, -21.000000)">
+            <g id="Group-2" transform="translate(0.000000, 21.000000)">
+                <path d="M16.4012173,1.16593544 C95.3502351,0.484410613 143.217736,0.143648199 160.003719,0.143648199 C174.341724,0.143648199 174.485119,9.27834804 174.485119,9.98458734 C174.485119,54.0817758 174.485128,108.753578 174.485146,173.999994 L174.48515,173.999994 C174.485151,178.418274 170.903428,181.999999 166.485148,182 C166.485147,182 166.485146,182 166.485146,182 C76.659522,182 25.7647892,182 13.8009471,182 C0.667358672,182 0.667358672,175.138154 0.667358672,161.202129 C0.667358672,143.640743 3.27343404,92.797012 8.48558479,8.67093572 L8.48558364,8.67093564 C8.74527586,4.47940551 12.2018065,1.20218672 16.4012173,1.16593544 Z" id="Rectangle-Copy" fill="#DA8D63"></path>
+                <rect id="Rectangle" fill="#FFA777" x="0" y="0" width="169" height="171" rx="8"></rect>
+            </g>
+            <text id="G" font-family="AvenirNext-Bold, Avenir Next" font-size="163.199997" font-weight="bold" fill="#323232">
+                <tspan x="22" y="163">G</tspan>
+            </text>
+            <text id="1" font-family="AvenirNext-Bold, Avenir Next" font-size="36" font-weight="bold" fill="#323232">
+                <tspan x="10" y="164">1</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
