@@ -199,7 +199,13 @@ $(document).ready(function() {
 
             this.snake = new Snake(
                 UP,
-                [new SnakeTile(12, 5, 'V', stage)]
+                [
+                    new SnakeTile(12, 5, 'V', stage),
+                    new SnakeTile(12, 6, 'I', stage),
+                    new SnakeTile(12, 7, 'N', stage),
+                    new SnakeTile(11, 7, 'C', stage),
+                    new SnakeTile(10, 7, 'E', stage),
+                ]
             )
         }
 
