@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Letter</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M31.2031493,13.009856 C109.512043,12.3366187 156.990665,12 173.639015,12 C187.857797,12 188,21.0215117 188,21.719 C188,75.146 188,128.573 188,182 L188,182 C188,186.418278 184.418278,190 180,190 C129.427718,190 78.8554368,190 28.2831552,190 C15.2587744,190 14,185.711829 14,171.948486 C14,154.601089 17.0979225,104.091191 23.2937675,20.4187921 L23.2937624,20.4187917 C23.6011602,16.267509 27.0406547,13.0456418 31.2031493,13.009856 Z" id="path-1"></path>
+        <filter x="-0.6%" y="-0.6%" width="102.3%" height="102.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feColorMatrix values="0 0 0 0 0.00996492347   0 0 0 0 0.00996492347   0 0 0 0 0.00996492347  0 0 0 0.249348958 0" type="matrix" in="shadowOffsetOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Symbol-V" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Letter">
+            <g id="Rectangle-Copy">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#DA8D63" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <rect id="Rectangle" fill="#FFA777" x="14" y="12" width="169" height="171" rx="8"></rect>
+            <polygon id="V" fill="#323232" points="110.95 147 85.3 147 45.1 40.8 73.9 40.8 98.5 116.1 99.1 116.1 123.55 40.8 151.9 40.8"></polygon>
+            <path d="M166.184,170.274 L166.184,174 L161.945,174 L161.945,170.274 L152.954,170.274 L152.954,166.467 L160.73,154.884 L166.157,154.884 L166.157,166.602 L168.803,166.602 L168.803,170.274 L166.184,170.274 Z M161.972,159.528 L161.891,159.528 L157.355,166.602 L161.972,166.602 L161.972,159.528 Z" id="4" fill="#323232"></path>
+        </g>
+    </g>
+</svg>

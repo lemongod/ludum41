@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Letter</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M31.2031493,13.009856 C109.512043,12.3366187 156.990665,12 173.639015,12 C187.857797,12 188,21.0215117 188,21.719 C188,75.146 188,128.573 188,182 L188,182 C188,186.418278 184.418278,190 180,190 C129.427718,190 78.8554368,190 28.2831552,190 C15.2587744,190 14,185.711829 14,171.948486 C14,154.601089 17.0979225,104.091191 23.2937675,20.4187921 L23.2937624,20.4187917 C23.6011602,16.267509 27.0406547,13.0456418 31.2031493,13.009856 Z" id="path-1"></path>
+        <filter x="-0.6%" y="-0.6%" width="102.3%" height="102.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feColorMatrix values="0 0 0 0 0.00996492347   0 0 0 0 0.00996492347   0 0 0 0 0.00996492347  0 0 0 0.249348958 0" type="matrix" in="shadowOffsetOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Symbol-E" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Letter">
+            <g id="Rectangle-Copy">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#DA8D63" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <rect id="Rectangle" fill="#FFA777" x="14" y="12" width="169" height="171" rx="8"></rect>
+            <polygon id="E" fill="#323232" points="63.925 147 63.925 40.8 135.325 40.8 135.325 62.55 88.675 62.55 88.675 82.5 132.775 82.5 132.775 103.05 88.675 103.05 88.675 125.1 138.025 125.1 138.025 147"></polygon>
+            <polygon id="1" fill="#323232" points="159.92 174 159.92 159.96 156.356 162.714 154.007 159.501 160.298 154.884 164.456 154.884 164.456 174"></polygon>
+        </g>
+    </g>
+</svg>
