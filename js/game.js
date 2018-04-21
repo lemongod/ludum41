@@ -46,31 +46,31 @@ $(document).ready(function() {
 
     const UP = 'up', DOWN = 'down', LEFT = 'left', RIGHT = 'right';
     let snake;
+    let upKey = keyboard(38); // up
+    let downKey = keyboard(40); // down
+    let leftKey = keyboard(37); // left
+    let rightKey = keyboard(39); // right
 
     function setUpControls(snake) {
-        let upKey = keyboard(38); // up
         upKey.press = () => {
             snake.setDirection(UP);
         };
-        upKey.release = () => {};
-
-        let downKey = keyboard(40); // down
         downKey.press = () => {
             snake.setDirection(DOWN);
         };
-        downKey.release = () => {};
-
-        let leftKey = keyboard(37); // left
         leftKey.press = () => {
             snake.setDirection(LEFT);
         };
-        leftKey.release = () => {};
-
-        let rightKey = keyboard(39); // right
         rightKey.press = () => {
             snake.setDirection(RIGHT);
         };
-        rightKey.release = () => {};
+    }
+
+    function disableControls(snake) {
+        upKey.press = () => {};
+        downKey.press = () => {};
+        leftKey.press = () => {};
+        rightKey.press = () => {};
     }
 
     class Tile {
@@ -185,6 +185,11 @@ $(document).ready(function() {
             this.move(nextX, nextY);
             this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, this.container));
         }
+
+        die() {
+            disableControls(this.snake);
+            alert("YOU LOSE");
+        }
     }
 
     class Board {
@@ -198,7 +203,7 @@ $(document).ready(function() {
             var grid = [
                 '               ',
                 '               ',
-                '          R V  ',
+                '          R    ',
                 '          E E  ',
                 '       SERPENT ',
                 '       N  T O  ',
@@ -228,7 +233,7 @@ $(document).ready(function() {
             }
 
             this.snake = new Snake(
-                UP,
+                '',
                 [
                     new Tile(12, 2, 'V', snakeContainer),
                     // new Tile(12, 6, 'I', stage),
@@ -262,6 +267,13 @@ $(document).ready(function() {
             return this.grid[y][x] !== ' ';
         }
 
+        isAlreadySnakeTile(x, y) {
+            //
+            return this.snake.snakeTiles.filter(
+                snakeTile => snakeTile.x == x && snakeTile.y == y
+            ).length > 0;
+        }
+
         removeTile(tile) {
             this.container.removeChild(tile.image);
             this.grid[tile.y][tile.x] = ' ';
@@ -271,7 +283,10 @@ $(document).ready(function() {
             var x, y;
             ({x, y} = this.snake.getNextPosition());
             console.log(this.snake.getName());
-            if (this.isOpenPosition(x, y)) {
+            console.log(this.isAlreadySnakeTile(x, y));
+            if (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y)) {
+                this.snake.die();
+            } else if (this.isOpenPosition(x, y)) {
                 this.snake.move(x, y);
             } else if (this.isLetterTile(x, y)) {
                 var nextTile = this.getTile(x, y);
