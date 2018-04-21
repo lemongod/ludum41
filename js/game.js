@@ -70,7 +70,7 @@ $(document).ready(function() {
         rightKey.release = () => {};
     }
 
-    class SnakeTile {
+    class Tile {
         constructor(x, y, letter, stage) {
             this.x = x;
             this.y = y;
@@ -108,9 +108,9 @@ $(document).ready(function() {
     }
 
     class Snake {
-        constructor(currentDirection, snakeTiles) {
+        constructor(currentDirection, Tiles) {
             this.currentDirection = currentDirection;
-            this.snakeTiles = snakeTiles;
+            this.Tiles = Tiles;
             setUpControls(this);
         }
 
@@ -119,7 +119,7 @@ $(document).ready(function() {
         }
 
         getHead() {
-            return this.snakeTiles[0];
+            return this.Tiles[0];
         }
 
         getHeadPosition() {
@@ -151,17 +151,17 @@ $(document).ready(function() {
         }
 
         move(nextX, nextY) {
-            var head = this.snakeTiles[0];
+            var head = this.Tiles[0];
             
             var prevX = head.x;
             var prevY = head.y;
 
-            for (var i = 1; i < this.snakeTiles.length; i++) {
-                var thisPrevX = this.snakeTiles[i].x;
-                var thisPrevY = this.snakeTiles[i].y;
+            for (var i = 1; i < this.Tiles.length; i++) {
+                var thisPrevX = this.Tiles[i].x;
+                var thisPrevY = this.Tiles[i].y;
 
-                this.snakeTiles[i].setX(prevX);
-                this.snakeTiles[i].setY(prevY);
+                this.Tiles[i].setX(prevX);
+                this.Tiles[i].setY(prevY);
 
                 prevX = thisPrevX;
                 prevY = thisPrevY;
@@ -174,34 +174,50 @@ $(document).ready(function() {
 
     class Board {
         constructor(stage) {
-            this.grid = [
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+            var grid = [
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','R',' ','V',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','E',' ','E',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ','S','E','R','P','E','N','T',' '],
                 [' ',' ',' ',' ',' ',' ',' ','N',' ',' ','T',' ','O',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ','A',' ',' ','I',' ','M',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ','K',' ',' ','L',' ',' ',' ',' '],
+                [' ',' ',' ',' ','C',' ',' ','A',' ',' ','I',' ','M',' ',' '],
+                [' ',' ',' ',' ','O',' ',' ','K',' ',' ','L',' ',' ',' ',' '],
                 [' ',' ','S','L','I','T','H','E','R',' ','E',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ','S',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ','L',' ',' ','S',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
             ]
+            
+            this.grid = []
+            for (var i = 0; i < grid.length; i++) {
+                var innerArray = [];
+                for (var k = 0; k < grid[i].length; k++) {
+                    innerArray.push(new Tile(k, i, grid[i][k], stage));
+                }
+                this.grid.push(innerArray)
+            }
 
             this.snake = new Snake(
                 UP,
                 [
-                    new SnakeTile(12, 5, 'V', stage),
-                    new SnakeTile(12, 6, 'I', stage),
-                    new SnakeTile(12, 7, 'N', stage),
-                    new SnakeTile(11, 7, 'C', stage),
-                    new SnakeTile(10, 7, 'E', stage),
+                    new Tile(12, 5, 'V', stage),
+                    new Tile(12, 6, 'I', stage),
+                    new Tile(12, 7, 'N', stage),
+                    new Tile(11, 7, 'C', stage),
+                    new Tile(10, 7, 'E', stage),
                 ]
             )
+        }
+
+        isOpenPosition(x, y) {
+            if (x > 14 || x < 0 || y > 14 || y < 0) {
+                return false;
+            }
+            return this.grid[x][y] == ' '
         }
 
         update(renderer, stage) {
