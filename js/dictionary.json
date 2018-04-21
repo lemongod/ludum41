@@ -1,0 +1,28 @@
+{
+    a: ['alligator', 'anaconda', 'amphibian'],
+    b: ['bind', 'boa'],
+    c: ['cayman', 'carapace', 'cloaca', 'crepuscular', 'cobra', 'constrictor', 'coil'],
+    d: ['disnosaur', 'detritivore'],
+    e: ['ekans', 'ectothermic', 'eels'],
+    f: ['fangs'],
+    g: ['gecko', 'garter'],
+    h: ['herpetologist', 'harmless'],
+    i: ['invertebrate', 'insectavore'],
+    j: [''],
+    k: [''],
+    l: ['legless', 'lizard'],
+    m: ['metamorphosis'],
+    n: ['neurotoxin', 'nonvenomous'],
+    o: [''],
+    p: ['poison', 'python', 'pectines', plastron],
+    q: [''],
+    r: ['reptile', 'rattlesnake'],
+    s: ['scales', 'slither', 'sssss', 'slytherin', 'sidewinder']
+    t: ['theramin', 'toxin', 'terrarium'],
+    u: ['undulate'],
+    v: ['venomous','vertebrate'],
+    w: ['worm', 'writhing'],
+    x: ['xylophone'],
+    y: [''],
+    z: ['']
+}
