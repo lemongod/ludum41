@@ -1,4 +1,4 @@
 .gameContainer {
-    width: 50%;
+    max-width: 100vh;
     margin: 0 auto;
 }
