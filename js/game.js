@@ -14,7 +14,7 @@ $(document).ready(function() {
         key.isUp = true;
         key.press = undefined;
         key.release = undefined;
-        //The `downHandler`
+
         key.downHandler = event => {
             if (event.keyCode === key.code) {
                 if (key.isUp && key.press) key.press();
@@ -24,7 +24,6 @@ $(document).ready(function() {
             event.preventDefault();
         };
 
-        //The `upHandler`
         key.upHandler = event => {
             if (event.keyCode === key.code) {
                 if (key.isDown && key.release) key.release();
@@ -83,14 +82,14 @@ $(document).ready(function() {
 
         setUpImage(container) {
             // create a new Sprite from an image path
-            var image = PIXI.Sprite.fromImage(`static/${this.letter}.svg`);
+            let image = PIXI.Sprite.fromImage(`static/${this.letter}.svg`);
 
             // center the sprite's anchor point
             image.anchor.set(0);
 
             // move the sprite to the top left
-            image.x = GRIDSIZE*this.x + LINESIZE;
-            image.y = GRIDSIZE*this.y + LINESIZE;
+            image.x = this.coordinateToGrid(this.x);
+            image.y = this.coordinateToGrid(this.y);
             image.height = GRIDSIZE;
             image.width = GRIDSIZE;
 
@@ -99,14 +98,18 @@ $(document).ready(function() {
             return image
         }
 
+        coordinateToGrid(x) {
+            return GRIDSIZE * (x + 1) + LINESIZE;
+        }
+
         setX(x) {
             this.x = x;
-            this.image.x = GRIDSIZE * x + LINESIZE;
+            this.image.x = this.coordinateToGrid(x);
         }
 
         setY(y) {
             this.y = y;
-            this.image.y = GRIDSIZE * y + LINESIZE;
+            this.image.y = this.coordinateToGrid(y);
         }
     }
 
@@ -139,7 +142,7 @@ $(document).ready(function() {
         }
 
         getNextPosition() {
-            var x, y;
+            let x, y;
             ({x, y} = this.getHeadPosition());
             if (this.currentDirection == UP) {
                 y -= 1;
@@ -160,10 +163,10 @@ $(document).ready(function() {
         }
 
         move(nextX, nextY) {
-            var head = this.snakeTiles[0];
+            let head = this.snakeTiles[0];
             
-            var prevX = head.x;
-            var prevY = head.y;
+            let prevX = head.x;
+            let prevY = head.y;
 
             for (var i = 1; i < this.snakeTiles.length; i++) {
                 var thisPrevX = this.snakeTiles[i].x;
@@ -193,12 +196,9 @@ $(document).ready(function() {
     }
 
     class Board {
-        constructor(stage) {
+        constructor(boardContainer, snakeContainer) {
 
-            this.container = new PIXI.Container();
-            var snakeContainer = new PIXI.Container();
-            stage.addChild(this.container);
-            stage.addChild(snakeContainer);
+            this.container = boardContainer;
 
             var grid = [
                 '               ',
@@ -250,7 +250,7 @@ $(document).ready(function() {
         }
 
         isOutOfBounds(x, y) {
-            return (x > 15 || x < 1 || y > 15 || y < 1);
+            return (x > 14 || x < 0 || y > 14 || y < 0);
         }
 
         isOpenPosition(x, y) {
@@ -304,19 +304,24 @@ $(document).ready(function() {
 
         // Create visual stuff
 
-        var renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
+        let renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
 
         // Create the stage
-        var stage = new PIXI.Container();
+        let stage = new PIXI.Container();
         $gameContainer.append(renderer.view);
 
-        var backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
+        let backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
         backgroundGrid.width = BACKGROUND_SIZE;
         backgroundGrid.height = BACKGROUND_SIZE;
 
-        stage.addChild(backgroundGrid);
+        let boardContainer = new PIXI.Container();
+        let snakeContainer = new PIXI.Container();
 
-        board = new Board(stage);
+        stage.addChild(backgroundGrid);
+        stage.addChild(boardContainer);
+        stage.addChild(snakeContainer);
+
+        board = new Board(boardContainer, snakeContainer);
 
         const ticker = new PIXI.ticker.Ticker();
         ticker.add((delta) => gameLoop(delta, renderer, stage, board));
@@ -326,7 +331,7 @@ $(document).ready(function() {
     const TICK_SPEED = 10;
     var timeSinceLastTick = 0;
 
-    function gameLogic(renderer, stage, board) {
+    function gameLogic(renderer, board) {
         // headSnake asks for next snake position (based on last direction input)
         // check for open tile/out of bounds tile/own tail/another letter tile
         // if open tile, move into it, shift all letters into the position of the next letter in the snake array
@@ -334,14 +339,14 @@ $(document).ready(function() {
         // if own tail, die
         // if another letter tile, move into it and add the letter to the tail, remove letter from gameboard
         //    check state of current word, if it cannot match gameWord, die
-        board.update(renderer, stage);
+        board.update(renderer);
     }
 
     function gameLoop(delta, renderer, stage, board) {
         timeSinceLastTick += delta;
         if (timeSinceLastTick > TICK_SPEED) {
             timeSinceLastTick = 0;
-            gameLogic(renderer, stage, board);
+            gameLogic(renderer, board);
         }
 
         renderer.render(stage);
