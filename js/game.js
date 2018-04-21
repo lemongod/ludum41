@@ -44,41 +44,31 @@ $(document).ready(function() {
     const UP = 'up', DOWN = 'down', LEFT = 'left', RIGHT = 'right';
     let snake;
 
-    // function setUpControls(letterImage, stage) {
-    //     let upKey = keyboard(38); // up
-    //     upKey.press = () => {
-    //         if (letterImage.y >= (GRIDSIZE * 2)) {
-    //             letterImage.y -= GRIDSIZE
-    //         }
-    //     };
-    //     upKey.release = () => {};
+    function setUpControls(snake) {
+        let upKey = keyboard(38); // up
+        upKey.press = () => {
+            snake.setDirection(UP);
+        };
+        upKey.release = () => {};
 
-    //     let downKey = keyboard(40); // down
-    //     downKey.press = () => {
-    //         var lowerBound = stage.height - GRIDSIZE * 3
-    //         if (letterImage.y <= lowerBound) {
-    //             letterImage.y += GRIDSIZE
-    //         }
-    //     };
-    //     downKey.release = () => {};
+        let downKey = keyboard(40); // down
+        downKey.press = () => {
+            snake.setDirection(DOWN);
+        };
+        downKey.release = () => {};
 
-    //     let leftKey = keyboard(37); // left
-    //     leftKey.press = () => {
-    //         if (letterImage.x >= (GRIDSIZE * 2)) {
-    //             letterImage.x -= GRIDSIZE
-    //         }        
-    //     };
-    //     leftKey.release = () => {};
+        let leftKey = keyboard(37); // left
+        leftKey.press = () => {
+            snake.setDirection(LEFT);
+        };
+        leftKey.release = () => {};
 
-    //     let rightKey = keyboard(39); // right
-    //     rightKey.press = () => {
-    //         var upperBound = stage.height - GRIDSIZE * 3
-    //         if (letterImage.x <= upperBound) {
-    //             letterImage.x += GRIDSIZE
-    //         }        
-    //     };
-    //     rightKey.release = () => {};
-    // }
+        let rightKey = keyboard(39); // right
+        rightKey.press = () => {
+            snake.setDirection(RIGHT);
+        };
+        rightKey.release = () => {};
+    }
 
     class SnakeTile {
         constructor(x, y, letter, stage) {
@@ -121,6 +111,11 @@ $(document).ready(function() {
         constructor(currentDirection, snakeTiles) {
             this.currentDirection = currentDirection;
             this.snakeTiles = snakeTiles;
+            setUpControls(this);
+        }
+
+        setDirection(direction) {
+            this.currentDirection = direction;
         }
 
         getHead() {
