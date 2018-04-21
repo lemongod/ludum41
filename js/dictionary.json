@@ -14,7 +14,7 @@
     m: ['metamorphosis', 'moccasin', 'milk', 'medusa', 'mongoose', 'molting'],
     n: ['neurotoxin', 'nonvenomous', 'noodles', 'nagini'],
     o: ['ophidian', 'ouroboros'],
-    p: ['poison', 'python', 'pectines', 'plastron', 'pray', 'predator', 'pretzel', 'pugnacious'],
+    p: ['poison', 'python', 'pectines', 'plastron', 'pray', 'predator', 'pretzel', 'pugnacious', 'petroglyphs'],
     q: ['queen', 'quetzalcoatl'],
     r: ['reptile', 'rattlesnake', 'ribbon'],
     s: ['scales', 'slither', 'sssss', 'slytherin', 'sidewinder', 'saxicolous', 'serpent']
@@ -23,6 +23,6 @@
     v: ['venomous','vertebrate', 'viper', 'vomiting', 'villian'],
     w: ['worm', 'writhing', 'wilderness', 'wrap', 'wiggle'],
     x: ['xylophone'],
-    y: ['yellow'],
+    y: ['yellow', 'yass'],
     z: ['zigzag', 'zoom', 'zip']
 }
