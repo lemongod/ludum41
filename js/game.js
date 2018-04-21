@@ -8,20 +8,23 @@ $(document).ready(function() {
     const LINESIZE = GRIDSIZE/10;
 
     class SnakeFactory{
-        constructor(container) {
+        constructor(container, board) {
             this.container = container;
-            this.allSnakes = [];
+            this.board = board;
         }
 
         createSnake(x, y, letter) {
+            if (this.board.snake) {
+                return;
+            }
             let newSnake = new Snake(
                 '',
                 [
-                    new Tile(x, y, letter, this.container),
+                    new Tile(x, y, letter, this.container, this.board),
                 ],
                 this.container,
             )
-            this.allSnakes.push(newSnake);
+            this.board.snake = newSnake;
             return newSnake
         }
     }
@@ -93,10 +96,11 @@ $(document).ready(function() {
     }
 
     class Tile {
-        constructor(x, y, letter, container) {
+        constructor(x, y, letter, container, board) {
             this.x = x;
             this.y = y;
             this.letter = letter;
+            this.board = board;
             this.image = this.setUpImage(container);
         }
 
@@ -106,6 +110,7 @@ $(document).ready(function() {
             image.interactive = true;
             image.buttonMode = true;
             image.on('click', (event) => {
+                this.board.removeTile(this);
                 snakeCreator.createSnake(this.x, this.y, this.letter);
             });
              
@@ -124,6 +129,7 @@ $(document).ready(function() {
         }
 
         coordinateToGrid(x) {
+            if (x === null) return -1000
             return GRIDSIZE * (x + 1) + LINESIZE;
         }
 
@@ -212,7 +218,7 @@ $(document).ready(function() {
         eat(nextX, nextY, nextTile, board) {
             board.removeTile(nextTile);
             this.move(nextX, nextY);
-            this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, this.container));
+            this.snakeTiles.push(new Tile(null, null, nextTile.letter, this.container, board));
         }
 
         die() {
@@ -252,7 +258,7 @@ $(document).ready(function() {
                 var innerArray = [];
                 for (var k = 0; k < grid[i].length; k++) {
                     if (grid[i][k] !== ' '){ 
-                        innerArray.push(new Tile(k, i, grid[i][k], this.container));
+                        innerArray.push(new Tile(k, i, grid[i][k], this.container, this));
                     }
                     else {
                         innerArray.push(' ');
@@ -261,7 +267,7 @@ $(document).ready(function() {
                 this.grid.push(innerArray)
             }
 
-            snakeCreator = new SnakeFactory(snakeContainer);
+            snakeCreator = new SnakeFactory(snakeContainer, this);
         }
 
         getTile(x, y) {
@@ -299,10 +305,9 @@ $(document).ready(function() {
 
         update(renderer) {
             var x, y;
-            if (!this.snake && !snakeCreator.allSnakes[0]) {
+            if (!this.snake) {
                 return;
             }
-            this.snake = snakeCreator.allSnakes[0];
             ({x, y} = this.snake.getNextPosition());
             console.log(this.snake.getName());
 
@@ -331,14 +336,12 @@ $(document).ready(function() {
         backgroundGrid.width = BACKGROUND_SIZE;
         backgroundGrid.height = BACKGROUND_SIZE;
 
-        let boardContainer = new PIXI.Container();
-        boardContainer.name = 'boardContainer';
-        let snakeContainer = new PIXI.Container();
-        snakeContainer.name = 'snakeContainer';
+        let boardContainer = new PIXI.Container(name='boardContainer');
+        let snakeContainer = new PIXI.Container(name='snakeContainer');
 
-        stage.addChild(backgroundGrid);
-        stage.addChild(boardContainer);
-        stage.addChild(snakeContainer);
+        stage.addChildAt(backgroundGrid, 0);
+        stage.addChildAt(boardContainer, 1);
+        stage.addChildAt(snakeContainer, 2);
 
         board = new Board(boardContainer, snakeContainer);
 
