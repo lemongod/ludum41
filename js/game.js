@@ -108,9 +108,9 @@ $(document).ready(function() {
     }
 
     class Snake {
-        constructor(currentDirection, Tiles) {
+        constructor(currentDirection, snakeTiles) {
             this.currentDirection = currentDirection;
-            this.Tiles = Tiles;
+            this.snakeTiles = snakeTiles;
             setUpControls(this);
         }
 
@@ -119,7 +119,7 @@ $(document).ready(function() {
         }
 
         getHead() {
-            return this.Tiles[0];
+            return this.snakeTiles[0];
         }
 
         getHeadPosition() {
@@ -127,6 +127,13 @@ $(document).ready(function() {
                 x: this.getHead().x,
                 y: this.getHead().y
             }
+        }
+
+        getName() {
+            return this.snakeTiles.reduce(
+                (name, tile) => (name + tile.letter),
+                ''
+            )
         }
 
         getNextPosition() {
@@ -151,17 +158,17 @@ $(document).ready(function() {
         }
 
         move(nextX, nextY) {
-            var head = this.Tiles[0];
+            var head = this.snakeTiles[0];
             
             var prevX = head.x;
             var prevY = head.y;
 
-            for (var i = 1; i < this.Tiles.length; i++) {
-                var thisPrevX = this.Tiles[i].x;
-                var thisPrevY = this.Tiles[i].y;
+            for (var i = 1; i < this.snakeTiles.length; i++) {
+                var thisPrevX = this.snakeTiles[i].x;
+                var thisPrevY = this.snakeTiles[i].y;
 
-                this.Tiles[i].setX(prevX);
-                this.Tiles[i].setY(prevY);
+                this.snakeTiles[i].setX(prevX);
+                this.snakeTiles[i].setY(prevY);
 
                 prevX = thisPrevX;
                 prevY = thisPrevY;
@@ -169,6 +176,14 @@ $(document).ready(function() {
 
             head.setX(nextX);
             head.setY(nextY);
+        }
+
+        eat(nextX, nextY, nextTile, stage, board) {
+            stage.removeChild(nextTile.image);
+            board.grid[nextY][nextX] = ' ';
+            this.move(nextX, nextY);
+            this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, stage));
+            // TODO put head on top of removed tile
         }
     }
 
@@ -196,7 +211,12 @@ $(document).ready(function() {
             for (var i = 0; i < grid.length; i++) {
                 var innerArray = [];
                 for (var k = 0; k < grid[i].length; k++) {
-                    innerArray.push(new Tile(k, i, grid[i][k], stage));
+                    if (grid[i][k] !== ' '){ 
+                        innerArray.push(new Tile(k, i, grid[i][k], stage));
+                    }
+                    else {
+                        innerArray.push(' ');
+                    }
                 }
                 this.grid.push(innerArray)
             }
@@ -204,26 +224,47 @@ $(document).ready(function() {
             this.snake = new Snake(
                 UP,
                 [
-                    new Tile(12, 5, 'V', stage),
-                    new Tile(12, 6, 'I', stage),
-                    new Tile(12, 7, 'N', stage),
-                    new Tile(11, 7, 'C', stage),
-                    new Tile(10, 7, 'E', stage),
+                    new Tile(12, 2, 'V', stage),
+                    // new Tile(12, 6, 'I', stage),
+                    // new Tile(12, 7, 'N', stage),
+                    // new Tile(11, 7, 'C', stage),
+                    // new Tile(10, 7, 'E', stage),
                 ]
             )
         }
 
+        getTile(x, y) {
+            return this.grid[y][x];
+        }
+
+        isOutOfBounds(x, y) {
+            return (x > 14 || x < 0 || y > 14 || y < 0);
+        }
+
         isOpenPosition(x, y) {
-            if (x > 14 || x < 0 || y > 14 || y < 0) {
+            if (this.isOutOfBounds(x, y)) {
                 return false;
             }
-            return this.grid[x][y] == ' '
+            return this.grid[y][x] == ' '
+        }
+
+        isLetterTile(x, y) {
+            if (this.isOutOfBounds(x, y)) {
+                return false;
+            }
+            return this.grid[y][x] !== ' ';
         }
 
         update(renderer, stage) {
             var x, y;
             ({x, y} = this.snake.getNextPosition());
-            this.snake.move(x, y);
+            console.log(this.snake.getName())
+            if (this.isOpenPosition(x, y)) {
+                this.snake.move(x, y);
+            } else if (this.isLetterTile(x, y)) {
+                var nextTile = this.getTile(x, y);
+                this.snake.eat(x, y, nextTile, stage, this);
+            }
         }
     }
 
