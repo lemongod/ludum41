@@ -120,8 +120,11 @@ $(document).ready(function() {
 
         // Create visual stuff
 
-        var app = new PIXI.Application(860,860);
-        document.body.appendChild(app.view);
+        var renderer = PIXI.autoDetectRenderer(860, 860);
+
+        // Create the stage
+        var stage = new PIXI.Container();
+        document.body.appendChild(renderer.view);
 
         const GRIDSIZE = 50;
         const LINESIZE = 5;
@@ -129,7 +132,7 @@ $(document).ready(function() {
         var backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
         backgroundGrid.width = 860;
         backgroundGrid.height = 860;
-        app.stage.addChild(backgroundGrid);
+        stage.addChild(backgroundGrid);
 
         // create a new Sprite from an image path
         var letterImage = PIXI.Sprite.fromImage('static/G.svg');
@@ -143,7 +146,7 @@ $(document).ready(function() {
         letterImage.height = GRIDSIZE;
         letterImage.width = GRIDSIZE;
 
-        app.stage.addChild(letterImage);
+        stage.addChild(letterImage);
 
         let upKey = keyboard(38); // up
         upKey.press = () => {
@@ -155,7 +158,7 @@ $(document).ready(function() {
 
         let downKey = keyboard(40); // down
         downKey.press = () => {
-            var lowerBound = app.stage.height - GRIDSIZE * 3
+            var lowerBound = stage.height - GRIDSIZE * 3
             if (letterImage.y <= lowerBound) {
                 letterImage.y += GRIDSIZE
             }
@@ -172,17 +175,17 @@ $(document).ready(function() {
 
         let rightKey = keyboard(39); // right
         rightKey.press = () => {
-            var upperBound = app.stage.height - GRIDSIZE * 3
+            var upperBound = stage.height - GRIDSIZE * 3
             if (letterImage.x <= upperBound) {
                 letterImage.x += GRIDSIZE
             }        
         };
         rightKey.release = () => {};
 
-        app.ticker.add(delta => gameLoop(delta));
+        gameLoop(renderer, stage);
     }
 
-    var gameLoop = function(delta) {
+    var gameLoop = function(renderer, stage) {
         // headSnake asks for next snake position (based on last direction input)
         // check for open tile/out of bounds tile/own tail/another letter tile
         // if open tile, move into it, shift all letters into the position of the next letter in the snake array
@@ -190,6 +193,9 @@ $(document).ready(function() {
         // if own tail, die
         // if another letter tile, move into it and add the letter to the tail, remove letter from gameboard
         //    check state of current word, if it cannot match gameWord, die
+        // console.log('hello ' + delta);
+        renderer.render(stage);
+        requestAnimationFrame(() => gameLoop(renderer, stage));
     }
 
     setUp();
