@@ -1,8 +1,13 @@
 $(document).ready(function() {
 
-    const BACKGROUND_SIZE = 860;
-    const GRIDSIZE = 50;
-    const LINESIZE = 5;
+    var $gameContainer = $(".gameContainer");
+    var gameWidth =  $gameContainer.innerWidth();
+
+    console.log(gameWidth);
+
+    const BACKGROUND_SIZE = gameWidth;
+    const GRIDSIZE = gameWidth/17.2;
+    const LINESIZE = GRIDSIZE/10;
 
     function keyboard(keyCode) {
         let key = {};
@@ -152,7 +157,7 @@ $(document).ready(function() {
                 x += 1;
             }
             return {
-                x: x, 
+                x: x,
                 y: y,
             };
         }
@@ -206,7 +211,7 @@ $(document).ready(function() {
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
             ]
-            
+
             this.grid = []
             for (var i = 0; i < grid.length; i++) {
                 var innerArray = [];
@@ -272,16 +277,16 @@ $(document).ready(function() {
         // create canvas view
         // create gameboard grid
         // create snake
-    
+
         var gameWord = ['V', 'S', 'L'];
-    
+
         // Create visual stuff
 
         var renderer = PIXI.autoDetectRenderer(BACKGROUND_SIZE, BACKGROUND_SIZE);
 
         // Create the stage
         var stage = new PIXI.Container();
-        document.body.appendChild(renderer.view);
+        $gameContainer.append(renderer.view);
 
         var backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
         backgroundGrid.width = BACKGROUND_SIZE;
