@@ -243,7 +243,7 @@ $(document).ready(function() {
         ticker.start();
     }
 
-    const TICK_SPEED = 500;
+    const TICK_SPEED = 60;
     var timeSinceLastTick = 0;
 
     function gameLogic(renderer, stage, board) {
@@ -258,7 +258,6 @@ $(document).ready(function() {
     }
 
     function gameLoop(delta, renderer, stage, board) {
-
         timeSinceLastTick += delta;
         if (timeSinceLastTick > TICK_SPEED) {
             timeSinceLastTick = 0;
@@ -266,7 +265,6 @@ $(document).ready(function() {
         }
 
         renderer.render(stage);
-        requestAnimationFrame(() => gameLoop(delta, renderer, stage, board));
     }
 
     setUp();
