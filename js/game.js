@@ -80,6 +80,28 @@ $(document).ready(function() {
         rightKey.release = () => {};
     }
 
+    class Board {
+        constructor() {
+            this.grid = [
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','R',' ','V',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','E',' ','E',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ','S','E','R','P','E','N','T',' '],
+                [' ',' ',' ',' ',' ',' ',' ','N',' ',' ','T',' ','O',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ','A',' ',' ','I',' ','M',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ','K',' ',' ','L',' ',' ',' ',' '],
+                [' ',' ','S','L','I','T','H','E','R',' ','E',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ','S',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+            ]
+        }
+    }
+
     var setUp = function() {
         // create canvas view
         // create gameboard grid
@@ -147,23 +169,6 @@ $(document).ready(function() {
         }
     
         var gameWord = ['V', 'S', 'L'];
-        var grid = [
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','R',' ','V',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','E',' ','E',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ','S','E','R','P','E','N','T',' '],
-            [' ',' ',' ',' ',' ',' ',' ','N',' ',' ','T',' ','O',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ','A',' ',' ','I',' ','M',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ','K',' ',' ','L',' ',' ',' ',' '],
-            [' ',' ','S','L','I','T','H','E','R',' ','E',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ','S',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-            [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
-        ]
     
         // initial solid snaaaaaake
         var snake = new Snake(
@@ -200,10 +205,12 @@ $(document).ready(function() {
 
         setUpControls(letterImage, stage);
 
-        gameLoop(renderer, stage);
+        board = new Board();
+
+        gameLoop(renderer, stage, board);
     }
 
-    var gameLoop = function(renderer, stage) {
+    var gameLoop = function(renderer, stage, board) {
         // headSnake asks for next snake position (based on last direction input)
         // check for open tile/out of bounds tile/own tail/another letter tile
         // if open tile, move into it, shift all letters into the position of the next letter in the snake array
@@ -213,7 +220,7 @@ $(document).ready(function() {
         //    check state of current word, if it cannot match gameWord, die
         // console.log('hello ' + delta);
         renderer.render(stage);
-        requestAnimationFrame(() => gameLoop(renderer, stage));
+        requestAnimationFrame(() => gameLoop(renderer, stage, board));
     }
 
     setUp();
