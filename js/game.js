@@ -184,8 +184,7 @@ $(document).ready(function() {
         }
 
         eat(nextX, nextY, nextTile, stage, board) {
-            stage.removeChild(nextTile.image);
-            board.grid[nextY][nextX] = ' ';
+            board.removeTile(nextTile);
             this.move(nextX, nextY);
             this.snakeTiles.push(new Tile(nextX, nextY, nextTile.letter, stage));
             // TODO put head on top of removed tile
@@ -194,22 +193,28 @@ $(document).ready(function() {
 
     class Board {
         constructor(stage) {
+
+            this.boardContainer = new PIXI.Container();
+            this.snakeContainer = new PIXI.Container();
+            stage.addChild(this.boardContainer);
+            stage.addChild(this.snakeContainer);
+
             var grid = [
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','R',' ','V',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','E',' ','E',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ','S','E','R','P','E','N','T',' '],
-                [' ',' ',' ',' ',' ',' ',' ','N',' ',' ','T',' ','O',' ',' '],
-                [' ',' ',' ',' ','C',' ',' ','A',' ',' ','I',' ','M',' ',' '],
-                [' ',' ',' ',' ','O',' ',' ','K',' ',' ','L',' ',' ',' ',' '],
-                [' ',' ','S','L','I','T','H','E','R',' ','E',' ',' ',' ',' '],
-                [' ',' ',' ',' ','L',' ',' ','S',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
-                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+                '               ',
+                '               ',
+                '          R V  ',
+                '          E E  ',
+                '       SERPENT ',
+                '       N  T O  ',
+                '    C  A  I M  ',
+                '    O  K  L    ',
+                '  SLITHER E    ',
+                '    L  S       ',
+                '               ',
+                '               ',
+                '               ',
+                '               ',
+                '               ',
             ]
 
             this.grid = []
@@ -217,7 +222,7 @@ $(document).ready(function() {
                 var innerArray = [];
                 for (var k = 0; k < grid[i].length; k++) {
                     if (grid[i][k] !== ' '){ 
-                        innerArray.push(new Tile(k, i, grid[i][k], stage));
+                        innerArray.push(new Tile(k, i, grid[i][k], this.boardContainer));
                     }
                     else {
                         innerArray.push(' ');
@@ -229,7 +234,7 @@ $(document).ready(function() {
             this.snake = new Snake(
                 UP,
                 [
-                    new Tile(12, 2, 'V', stage),
+                    new Tile(12, 2, 'V', this.snakeContainer),
                     // new Tile(12, 6, 'I', stage),
                     // new Tile(12, 7, 'N', stage),
                     // new Tile(11, 7, 'C', stage),
@@ -243,7 +248,7 @@ $(document).ready(function() {
         }
 
         isOutOfBounds(x, y) {
-            return (x > 14 || x < 0 || y > 14 || y < 0);
+            return (x > 15 || x < 1 || y > 15 || y < 1);
         }
 
         isOpenPosition(x, y) {
@@ -258,6 +263,11 @@ $(document).ready(function() {
                 return false;
             }
             return this.grid[y][x] !== ' ';
+        }
+
+        removeTile(tile) {
+            this.boardContainer.removeChild(tile.image);
+            this.grid[tile.x][tile.y] = ' ';
         }
 
         update(renderer, stage) {
@@ -291,6 +301,7 @@ $(document).ready(function() {
         var backgroundGrid = PIXI.Sprite.fromImage('static/game_board.svg');
         backgroundGrid.width = BACKGROUND_SIZE;
         backgroundGrid.height = BACKGROUND_SIZE;
+
         stage.addChild(backgroundGrid);
 
         board = new Board(stage);
@@ -300,7 +311,7 @@ $(document).ready(function() {
         ticker.start();
     }
 
-    const TICK_SPEED = 60;
+    const TICK_SPEED = 10;
     var timeSinceLastTick = 0;
 
     function gameLogic(renderer, stage, board) {
