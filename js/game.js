@@ -93,6 +93,7 @@ $(document).ready(function() {
     }
 
     function disableControls(snake) {
+        snake.currentDirection = '';
         upKey.press = () => {};
         downKey.press = () => {};
         leftKey.press = () => {};
@@ -115,6 +116,7 @@ $(document).ready(function() {
             image.buttonMode = true;
             image.on('click', (event) => {
                 this.board.removeTile(this);
+                this.board.setWinWord(this.letter);
                 snakeCreator.createSnake(this.x, this.y, this.letter);
             });
              
@@ -153,7 +155,7 @@ $(document).ready(function() {
             this.currentDirection = currentDirection;
             this.snakeTiles = snakeTiles;
             this.container = container;
-            self.isDead = false;
+            this.isDead = false;
             setUpControls(this);
         }
 
@@ -174,7 +176,7 @@ $(document).ready(function() {
 
         getName() {
             const reducer = (name, tile) => (name + tile.letter);
-            return this.snakeTiles.reduce(reducer, '');
+            return this.snakeTiles.reduce(reducer, '').toLowerCase();
         }
 
         getNextPosition() {
@@ -199,6 +201,11 @@ $(document).ready(function() {
         }
 
         move(nextX, nextY) {
+            
+            if (this.isDead) {
+                return;
+            }
+
             let head = this.snakeTiles[0];
             
             let prevX = head.x;
@@ -226,9 +233,9 @@ $(document).ready(function() {
         }
 
         die() {
-            if (!self.isDead) {
-                self.isDead = true;
-                disableControls(this.snake);
+            if (!this.isDead) {
+                this.isDead = true;
+                disableControls(this);
                 alert("YOU LOSE");
             }
         }
@@ -239,7 +246,7 @@ $(document).ready(function() {
             this.container = container;
             this.titleText = 'Welcome to Scrabble 2';
             this.subText = 'Pick a letter to get started.';
-            this.wordText = 'GAMGGGGGG';
+            this.wordText = '';
 
             this.titleElement = this.createTitleElement();
             this.subElement = this.createSubElement();
@@ -278,6 +285,17 @@ $(document).ready(function() {
             return element;
         }
 
+        createWordElement() {
+            var element = new PIXI.Text(
+                'Win word: ' + this.wordText,
+                this.getStyle(18),
+            );
+            element.x = 500;
+            element.y = 100;
+
+            this.container.addChild(element);
+            return element;
+        }
     }
 
     class Board {
@@ -318,7 +336,8 @@ $(document).ready(function() {
                 }
                 this.grid.push(innerArray)
             }
-
+            
+            this.words = words;
             snakeCreator = new SnakeFactory(snakeContainer, this);
         }
 
@@ -355,13 +374,36 @@ $(document).ready(function() {
             this.grid[tile.y][tile.x] = ' ';
         }
 
+        setWinWord(letter) {
+            function getRandomInt(max) {
+                return Math.floor(Math.random() * Math.floor(max));
+            }
+
+            let lowerCaseLetter = letter.toLowerCase();
+            let randomWordIndex = getRandomInt(this.words[lowerCaseLetter].length);
+            this.winWord = this.words[lowerCaseLetter][randomWordIndex].toLowerCase();
+
+            this.hud.wordText = this.winWord;
+            this.hud.createWordElement();
+        }
+
         update(renderer) {
             var x, y;
             if (!this.snake) {
                 return;
             }
             ({x, y} = this.snake.getNextPosition());
-            console.log(this.snake.getName());
+            let snakeName = this.snake.getName();
+            console.log(snakeName);
+
+            if (!this.winWord.startsWith(snakeName)) {
+                this.snake.die();
+            }
+
+            if (this.winWord == this.snake.getName().toLowerCase()) {
+                disableControls(this.snake);
+                alert("You win!");
+            }
 
             let snakeHasMoved = this.snake.currentDirection;
             let snakeShouldDie = (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y));
@@ -405,7 +447,7 @@ $(document).ready(function() {
         ticker.start();
     }
 
-    const TICK_SPEED = 10;
+    const TICK_SPEED = 15;
     var timeSinceLastTick = 0;
 
     function gameLogic(renderer, board) {

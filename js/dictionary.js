@@ -1,4 +1,4 @@
-{
+var words = {
     a: ['alligator', 'anaconda', 'amphibian', 'armless', 'antivenom'],
     b: ['bind', 'boa', 'basilisk', 'backbone'],
     c: ['cayman', 'carapace', 'cloaca', 'crepuscular', 'cobra', 'constrictor', 'coil', 'carnivore', 'copperhead'],
@@ -17,7 +17,7 @@
     p: ['poison', 'python', 'pectines', 'plastron', 'pray', 'predator', 'pretzel', 'pugnacious'],
     q: ['queen', 'quetzalcoatl'],
     r: ['reptile', 'rattlesnake', 'ribbon'],
-    s: ['scales', 'slither', 'sssss', 'slytherin', 'sidewinder', 'saxicolous', 'serpent']
+    s: ['scales', 'slither', 'sssss', 'slytherin', 'sidewinder', 'saxicolous', 'serpent'],
     t: ['theramin', 'toxin', 'terrarium'],
     u: ['undulate', 'Underbody'],
     v: ['venomous','vertebrate', 'viper', 'vomiting', 'villian'],
