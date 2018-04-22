@@ -80,18 +80,10 @@ $(document).ready(function() {
     let rightKey = keyboard(39); // right
 
     function setUpControls(snake) {
-        upKey.press = () => {
-            snake.setDirection(UP);
-        };
-        downKey.press = () => {
-            snake.setDirection(DOWN);
-        };
-        leftKey.press = () => {
-            snake.setDirection(LEFT);
-        };
-        rightKey.press = () => {
-            snake.setDirection(RIGHT);
-        };
+        upKey.press = () => snake.setDirection(UP);
+        downKey.press = () => snake.setDirection(DOWN);
+        leftKey.press = () => snake.setDirection(LEFT);
+        rightKey.press = () => snake.setDirection(RIGHT);
     }
 
     function disableControls(snake) {
@@ -108,6 +100,7 @@ $(document).ready(function() {
             this.y = y;
             this.lastX = x;
             this.lastY = y;
+            this.offset = 0;
             this.letter = letter;
             this.board = board;
             this.image = this.setUpImage(container);
@@ -146,9 +139,21 @@ $(document).ready(function() {
         }
 
         update(delta) {
-            const offset = (delta + timeSinceLastTick) / TICK_SPEED;
-            const imageX = this.lastX - offset*(this.lastX - this.x);
-            const imageY = this.lastY - offset*(this.lastY - this.y);
+            const differenceX = this.x - this.lastX;
+            const differenceY = this.y - this.lastY;
+
+            if (differenceX == 0 && differenceY == 0) {
+                return;
+            }
+
+            this.offset += delta / TICK_SPEED;
+
+            if (this.offset >= 1) {
+                this.offset -= 1;
+            }
+
+            const imageX = this.lastX + this.offset*differenceX;
+            const imageY = this.lastY + this.offset*differenceY;
 
             this.image.x = this.coordinateToGrid(imageX);
             this.image.y = this.coordinateToGrid(imageY) + BACKGROUND_Y_OFFSET;
@@ -253,10 +258,18 @@ $(document).ready(function() {
             this.snakeTiles.push(new Tile(null, null, nextTile.letter, this.container, board));
         }
 
+        disableControls() {
+            disableControls(this);
+            this.isDead = true;
+            for (let tile of this.snakeTiles) {
+                tile.lastX = tile.x;
+                tile.lastY = tile.y;
+            }
+        }
+
         die() {
             if (!this.isDead) {
-                this.isDead = true;
-                disableControls(this);
+                this.disableControls();
                 alert("YOU LOSE");
             }
         }
@@ -381,10 +394,8 @@ $(document).ready(function() {
         }
 
         update(delta) {
-            let counter = 0;
             for (let tile of this.generateTiles()) {
                 tile.update(delta);
-                counter++;
             }
         }
 
@@ -454,8 +465,7 @@ $(document).ready(function() {
             }
 
             if (this.winWord == this.snake.getName().toLowerCase()) {
-                disableControls(this.snake);
-                this.snake.isDead = true;
+                this.snake.disableControls();
                 alert("You win!");
                 return;
             }
@@ -509,7 +519,7 @@ $(document).ready(function() {
     function gameLoop(delta, renderer, stage, board) {
         timeSinceLastTick += delta;
         if (timeSinceLastTick > TICK_SPEED) {
-            timeSinceLastTick = 0;
+            timeSinceLastTick = timeSinceLastTick - TICK_SPEED;
             board.gameTick(renderer);
         }
 
