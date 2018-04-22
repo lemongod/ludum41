@@ -3,7 +3,7 @@ $(document).ready(function() {
     var $gameContainer = $(".gameContainer");
     var gameWidth =  $gameContainer.innerWidth();
 
-    const BACKGROUND_Y_OFFSET = 200;
+    const BACKGROUND_Y_OFFSET = 100;
 
     const BACKGROUND_SIZE_X = gameWidth;
     const BACKGROUND_SIZE_Y = gameWidth + BACKGROUND_Y_OFFSET;
@@ -290,40 +290,29 @@ $(document).ready(function() {
             }
         }
 
-        createTitleElement(text) {
+        createElement(text, fontSize, y) {
             var element = new PIXI.Text(
                 text,
-                this.getStyle(24),
+                this.getStyle(fontSize),
             );
-            element.x = 100;
-            element.y = 100;
+            element.x = BACKGROUND_SIZE_X / 2;
+            element.y = y;
+            element.anchor.set(0.5, 0);
 
             this.container.addChild(element);
             return element;
+        }
+
+        createTitleElement(text) {
+            return this.createElement(text, 24, 0);
         }
 
         createSubElement(text) {
-            var element = new PIXI.Text(
-                text,
-                this.getStyle(18),
-            );
-            element.x = 100;
-            element.y = 150;
-
-            this.container.addChild(element);
-            return element;
+            return this.createElement(text, 18, 50);
         }
 
         createWordElement(text) {
-            var element = new PIXI.Text(
-                text,
-                this.getStyle(18),
-            );
-            element.x = 100;
-            element.y = 130;
-
-            this.container.addChild(element);
-            return element;
+            return this.createElement(text, 18, 30);
         }
 
         setWinWord(winWord) {
@@ -336,7 +325,7 @@ $(document).ready(function() {
             this.container.removeChild(this.subElement);
             this.subElement = this.createSubElement('Snake around with the arrow keys.');
         }
-        
+
     }
 
     class Board {
