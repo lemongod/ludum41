@@ -276,12 +276,9 @@ $(document).ready(function() {
     class HUD {
         constructor(container) {
             this.container = container;
-            this.titleText = 'Welcome to Scrabble 2';
-            this.subText = 'Pick a letter to get started.';
-            this.wordText = '';
 
-            this.titleElement = this.createTitleElement();
-            this.subElement = this.createSubElement();
+            this.titleElement = this.createTitleElement('Welcome to Scrabble 2');
+            this.subElement = this.createSubElement('Pick a letter to get started.');
         }
 
         getStyle(fontSize) {
@@ -293,9 +290,9 @@ $(document).ready(function() {
             }
         }
 
-        createTitleElement() {
+        createTitleElement(text) {
             var element = new PIXI.Text(
-                this.titleText,
+                text,
                 this.getStyle(24),
             );
             element.x = 100;
@@ -305,9 +302,9 @@ $(document).ready(function() {
             return element;
         }
 
-        createSubElement() {
+        createSubElement(text) {
             var element = new PIXI.Text(
-                this.subText,
+                text,
                 this.getStyle(18),
             );
             element.x = 100;
@@ -317,17 +314,29 @@ $(document).ready(function() {
             return element;
         }
 
-        createWordElement() {
+        createWordElement(text) {
             var element = new PIXI.Text(
-                'Win word: ' + this.wordText,
+                text,
                 this.getStyle(18),
             );
-            element.x = 500;
-            element.y = 100;
+            element.x = 100;
+            element.y = 130;
 
             this.container.addChild(element);
             return element;
         }
+
+        setWinWord(winWord) {
+            this.container.removeChild(this.wordElement);
+            this.wordElement = this.createWordElement(winWord);
+
+            this.container.removeChild(this.titleElement);
+            this.titleElement = this.createTitleElement('Your word is:');
+
+            this.container.removeChild(this.subElement);
+            this.subElement = this.createSubElement('Snake around with the arrow keys.');
+        }
+        
     }
 
     class Board {
@@ -439,8 +448,7 @@ $(document).ready(function() {
             let randomWordIndex = getRandomInt(this.words[lowerCaseLetter].length);
             this.winWord = this.words[lowerCaseLetter][randomWordIndex].toLowerCase();
 
-            this.hud.wordText = this.winWord;
-            this.hud.createWordElement();
+            this.hud.setWinWord(this.winWord);
         }
 
         gameTick(renderer) {
