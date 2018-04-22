@@ -22,9 +22,7 @@ $(document).ready(function() {
                 return;
             }
             let headTile = new Tile(x, y, letter, this.container, this.board);
-            let selectedFilter = new PIXI.filters.ColorMatrixFilter();
-            selectedFilter.lsd();
-            headTile.image.filters = [selectedFilter];
+            headTile.image.tint = 0x52ff52;
             let newSnake = new Snake(
                 '',
                 [headTile],
@@ -512,7 +510,7 @@ $(document).ready(function() {
         ticker.start();
     }
 
-    const TICK_SPEED = 15;
+    const TICK_SPEED = 17;
     var timeSinceLastTick = 0;
 
 
