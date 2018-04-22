@@ -21,11 +21,13 @@ $(document).ready(function() {
             if (this.board.snake) {
                 return;
             }
+            let headTile = new Tile(x, y, letter, this.container, this.board);
+            let selectedFilter = new PIXI.filters.ColorMatrixFilter();
+            selectedFilter.lsd();
+            headTile.image.filters = [selectedFilter];
             let newSnake = new Snake(
                 '',
-                [
-                    new Tile(x, y, letter, this.container, this.board),
-                ],
+                [headTile],
                 this.container,
             )
             this.board.snake = newSnake;
@@ -117,9 +119,11 @@ $(document).ready(function() {
             image.interactive = true;
             image.buttonMode = true;
             image.on('click', (event) => {
-                this.board.removeTile(this);
-                this.board.setWinWord(this.letter);
-                snakeCreator.createSnake(this.x, this.y, this.letter);
+                if (!this.board.snake) {
+                    this.board.removeTile(this);
+                    this.board.setWinWord(this.letter);
+                    snakeCreator.createSnake(this.x, this.y, this.letter);
+                }
             });
              
             // center the sprite's anchor point
@@ -214,11 +218,15 @@ $(document).ready(function() {
         }
 
         move(nextX, nextY) {
-            
             if (this.isDead) {
                 return;
             }
 
+            if (this.currentDirection != '') {
+                // Clear the initial selected tile filter we apply on snake creation
+                this.getHead().image.filters = [];
+            }
+            
             let head = this.snakeTiles[0];
             
             let prevX = head.x;
@@ -428,30 +436,38 @@ $(document).ready(function() {
 
         gameTick(renderer) {
             var x, y;
-            if (!this.snake) {
+            if (!this.snake || this.snake.isDead) {
                 return;
             }
             ({x, y} = this.snake.getNextPosition());
             let snakeName = this.snake.getName();
             console.log(snakeName);
 
-            if (!this.winWord.startsWith(snakeName)) {
-                this.snake.die();
+            let nextTile = this.getTile(x, y);
+            if (nextTile.letter) {
+                let nextLetter = this.getTile(x, y).letter.toLowerCase();
+                let nextWord = snakeName + nextLetter;
+                if (!this.winWord.startsWith(nextWord)) {
+                    this.snake.die();
+                    return;
+                }
             }
 
             if (this.winWord == this.snake.getName().toLowerCase()) {
                 disableControls(this.snake);
+                this.snake.isDead = true;
                 alert("You win!");
+                return;
             }
 
             let snakeHasMoved = this.snake.currentDirection;
             let snakeShouldDie = (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y));
             if (snakeHasMoved && snakeShouldDie) {
                 this.snake.die();
+                return;
             } else if (this.isOpenPosition(x, y)) {
                 this.snake.move(x, y);
             } else if (this.isLetterTile(x, y)) {
-                var nextTile = this.getTile(x, y);
                 this.snake.eat(x, y, nextTile, this);
             }
         }
