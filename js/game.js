@@ -104,6 +104,8 @@ $(document).ready(function() {
         constructor(x, y, letter, container, board) {
             this.x = x;
             this.y = y;
+            this.lastX = x;
+            this.lastY = y;
             this.letter = letter;
             this.board = board;
             this.image = this.setUpImage(container);
@@ -139,14 +141,25 @@ $(document).ready(function() {
             return GRIDSIZE * (x + 1) + LINESIZE;
         }
 
+        update(delta) {
+            const offset = (delta + timeSinceLastTick) / TICK_SPEED;
+            const imageX = this.lastX - offset*(this.lastX - this.x);
+            const imageY = this.lastY - offset*(this.lastY - this.y);
+
+            this.image.x = this.coordinateToGrid(imageX);
+            this.image.y = this.coordinateToGrid(imageY) + BACKGROUND_Y_OFFSET;
+        }
+
         setX(x) {
+            this.lastX = this.x;
             this.x = x;
-            this.image.x = this.coordinateToGrid(x);
+            // this.image.x = this.coordinateToGrid(x);
         }
 
         setY(y) {
+            this.lastY = this.y;
             this.y = y;
-            this.image.y = this.coordinateToGrid(y) + BACKGROUND_Y_OFFSET;
+            // this.image.y = this.coordinateToGrid(y) + BACKGROUND_Y_OFFSET;
         }
     }
 
@@ -341,6 +354,32 @@ $(document).ready(function() {
             snakeCreator = new SnakeFactory(snakeContainer, this);
         }
 
+        * generateBoardTiles() {
+            for (var i = 0; i < this.grid.length; i++) {
+                for (var k = 0; k < this.grid[i].length; k++) {
+                    let tile = this.grid[i][k];
+                    if (tile != ' ') {
+                        yield this.grid[i][k];
+                    }
+                }
+            }
+        }
+
+        * generateTiles() {
+            yield* this.generateBoardTiles();
+            if (this.snake) {
+                yield* this.snake.snakeTiles;
+            }
+        }
+
+        update(delta) {
+            let counter = 0;
+            for (let tile of this.generateTiles()) {
+                tile.update(delta);
+                counter++;
+            }
+        }
+
         getTile(x, y) {
             return this.grid[y][x];
         }
@@ -387,7 +426,7 @@ $(document).ready(function() {
             this.hud.createWordElement();
         }
 
-        update(renderer) {
+        gameTick(renderer) {
             var x, y;
             if (!this.snake) {
                 return;
@@ -450,24 +489,15 @@ $(document).ready(function() {
     const TICK_SPEED = 15;
     var timeSinceLastTick = 0;
 
-    function gameLogic(renderer, board) {
-        // headSnake asks for next snake position (based on last direction input)
-        // check for open tile/out of bounds tile/own tail/another letter tile
-        // if open tile, move into it, shift all letters into the position of the next letter in the snake array
-        // if out of bounds, die
-        // if own tail, die
-        // if another letter tile, move into it and add the letter to the tail, remove letter from gameboard
-        //    check state of current word, if it cannot match gameWord, die
-        board.update(renderer);
-    }
 
     function gameLoop(delta, renderer, stage, board) {
         timeSinceLastTick += delta;
         if (timeSinceLastTick > TICK_SPEED) {
             timeSinceLastTick = 0;
-            gameLogic(renderer, board);
+            board.gameTick(renderer);
         }
 
+        board.update(delta);
         renderer.render(stage);
     }
 
