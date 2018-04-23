@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     var $gameContainer = $(".gameContainer");
-    var gameWidth =  $gameContainer.innerWidth();
+    var gameWidth =  $gameContainer.innerWidth() - 100;
 
     const BACKGROUND_Y_OFFSET = 100;
 
@@ -10,6 +10,10 @@ $(document).ready(function() {
 
     const GRIDSIZE = gameWidth/17.2;
     const LINESIZE = GRIDSIZE/10;
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
 
     class SnakeFactory{
         constructor(container, board) {
@@ -47,7 +51,9 @@ $(document).ready(function() {
                 key.isDown = true;
                 key.isUp = false;
             }
-            event.preventDefault();
+            if ([37, 38, 39, 40].includes(event.keyCode)) {
+                event.preventDefault();
+            }
         };
 
         key.upHandler = event => {
@@ -56,7 +62,9 @@ $(document).ready(function() {
                 key.isDown = false;
                 key.isUp = true;
             }
-            event.preventDefault();
+            if ([37, 38, 39, 40].includes(event.keyCode)) {
+                event.preventDefault();
+            }        
         };
 
         //Attach event listeners
@@ -269,7 +277,15 @@ $(document).ready(function() {
         die() {
             if (!this.isDead) {
                 this.disableControls();
-                alert("YOU LOSE");
+                let losePhrases = [
+                    'Snake it or break it, you definitely did not snake it.',
+                    'If you keep losing, you might get hissed off.',
+                    'Looks like you\'re chasing your own tail.',
+                    'You\'re eating your words here.',
+                    'Ssssssssucksssss to sssssuuck',
+                    'Maybe try unhinging your jaw?',
+                ]
+                alert(losePhrases[getRandomInt(losePhrases.length)]);
             }
         }
     }
@@ -278,7 +294,7 @@ $(document).ready(function() {
         constructor(container) {
             this.container = container;
 
-            this.titleElement = this.createTitleElement('Welcome to Scrabble 2');
+            this.titleElement = this.createTitleElement('Welcome to Scrabobouros');
             this.subElement = this.createSubElement('Pick a letter to get started.');
         }
 
@@ -430,10 +446,6 @@ $(document).ready(function() {
         }
 
         setWinWord(letter) {
-            function getRandomInt(max) {
-                return Math.floor(Math.random() * Math.floor(max));
-            }
-
             let lowerCaseLetter = letter.toLowerCase();
             let randomWordIndex = getRandomInt(this.words[lowerCaseLetter].length);
             this.winWord = this.words[lowerCaseLetter][randomWordIndex].toLowerCase();
