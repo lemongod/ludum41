@@ -148,6 +148,7 @@ $(document).ready(function() {
 
             if (this.offset >= 1) {
                 this.offset -= 1;
+                return;
             }
 
             const imageX = this.lastX + this.offset*differenceX;
@@ -337,20 +338,20 @@ $(document).ready(function() {
 
             var grid = [
                 '               ',
-                '               ',
-                '          R V  ',
-                '          E E  ',
-                '       SERPENT ',
-                '       N  T O  ',
-                '    C  A  I M  ',
-                '    O  K  L    ',
-                '  SLITHER E    ',
-                '    L  S       ',
-                '               ',
-                '               ',
-                '               ',
-                '               ',
-                '               ',
+                '     ADDER V   ',
+                '         E E   ',
+                '      SERPENTS ',
+                '  C   N  T O   ',
+                ' BOA  A  I M   ',
+                '  I   K  L O   ',
+                ' SLITHER I U   ',
+                '  I   S  A S   ',
+                '  N      N     ',
+                '  GECKO        ',
+                '    O    Z     ',
+                '    BASILISK   ',
+                '    R    G     ',
+                '    A          ',
             ]
 
             this.grid = []
@@ -446,8 +447,20 @@ $(document).ready(function() {
                 return;
             }
             ({x, y} = this.snake.getNextPosition());
+
             let snakeName = this.snake.getName();
-            console.log(snakeName);
+            let snakeHasMoved = this.snake.currentDirection;
+            let snakeShouldDie = (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y));
+            if (snakeHasMoved && snakeShouldDie) {
+                this.snake.die();
+                return;
+            }
+            
+            if (this.winWord == snakeName) {
+                this.snake.disableControls();
+                alert("You win!");
+                return;
+            }
 
             let nextTile = this.getTile(x, y);
             if (nextTile.letter) {
@@ -459,18 +472,7 @@ $(document).ready(function() {
                 }
             }
 
-            if (this.winWord == this.snake.getName().toLowerCase()) {
-                this.snake.disableControls();
-                alert("You win!");
-                return;
-            }
-
-            let snakeHasMoved = this.snake.currentDirection;
-            let snakeShouldDie = (this.isOutOfBounds(x, y) || this.isAlreadySnakeTile(x, y));
-            if (snakeHasMoved && snakeShouldDie) {
-                this.snake.die();
-                return;
-            } else if (this.isOpenPosition(x, y)) {
+            if (this.isOpenPosition(x, y)) {
                 this.snake.move(x, y);
             } else if (this.isLetterTile(x, y)) {
                 this.snake.eat(x, y, nextTile, this);
@@ -507,7 +509,7 @@ $(document).ready(function() {
         ticker.start();
     }
 
-    const TICK_SPEED = 17;
+    const TICK_SPEED = 15;
     var timeSinceLastTick = 0;
 
 
