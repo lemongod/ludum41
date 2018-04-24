@@ -294,7 +294,7 @@ $(document).ready(function() {
         constructor(container) {
             this.container = container;
 
-            this.titleElement = this.createTitleElement('Welcome to Scrabobouros');
+            this.titleElement = this.createTitleElement('Scrabble 2: The Snakening');
             this.subElement = this.createSubElement('Pick a letter to get started.');
         }
 

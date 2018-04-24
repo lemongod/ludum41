@@ -2,7 +2,7 @@ var words = {
     a: ['armless', 'antivenom'],
     b: ['bind', 'back'],
     c: ['crepuscular', 'cobra', 'constrictor'],
-    d: ['disnosaur', 'deadly'],
+    d: ['dinosaur', 'deadly'],
     e: ['ekans', 'eels'],
     f: ['fangs', 'fear', 'frightening'],
     g: ['garter', 'gangrene', 'glands'],
