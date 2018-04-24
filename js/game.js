@@ -342,7 +342,7 @@ $(document).ready(function() {
             this.titleElement = this.createTitleElement('Your word is:');
 
             this.container.removeChild(this.subElement);
-            this.subElement = this.createSubElement('Snake around with the arrow keys.');
+            this.subElement = this.createSubElement('Snake around with the arrow keys and try to spell it.');
         }
 
     }
