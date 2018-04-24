@@ -288,6 +288,7 @@ $(document).ready(function() {
                     'Maybe try unhinging your jaw?',
                 ]
                 alert(losePhrases[getRandomInt(losePhrases.length)]);
+                location.reload();
             }
         }
     }
@@ -472,7 +473,7 @@ $(document).ready(function() {
 
             if (this.winWord == snakeName) {
                 this.snake.disableControls();
-                alert("You win!");
+                alert("You win! You are a snake!");
                 return;
             }
 
