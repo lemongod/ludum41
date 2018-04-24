@@ -64,7 +64,7 @@ $(document).ready(function() {
             }
             if ([37, 38, 39, 40].includes(event.keyCode)) {
                 event.preventDefault();
-            }        
+            }
         };
 
         //Attach event listeners
@@ -124,7 +124,7 @@ $(document).ready(function() {
                     snakeCreator.createSnake(this.x, this.y, this.letter);
                 }
             });
-             
+
             // center the sprite's anchor point
             image.anchor.set(0);
 
@@ -238,9 +238,9 @@ $(document).ready(function() {
                 // Clear the initial selected tile filter we apply on snake creation
                 this.getHead().image.filters = [];
             }
-            
+
             let head = this.snakeTiles[0];
-            
+
             let prevX = head.x;
             let prevY = head.y;
 
@@ -281,8 +281,10 @@ $(document).ready(function() {
                     'Snake it or break it, you definitely did not snake it.',
                     'If you keep losing, you might get hissed off.',
                     'Looks like you\'re chasing your own tail.',
+                    'Pat yourself on the back, because you are not a snake.',
                     'You\'re eating your words here.',
                     'Ssssssssucksssss to sssssuuck',
+                    'Maye some games are just incompatible? You lose anyway.',
                     'Maybe try unhinging your jaw?',
                 ]
                 alert(losePhrases[getRandomInt(losePhrases.length)]);
@@ -295,7 +297,7 @@ $(document).ready(function() {
             this.container = container;
 
             this.titleElement = this.createTitleElement('Scrabble 2: The Snakening');
-            this.subElement = this.createSubElement('Pick a letter to get started.');
+            this.subElement = this.createSubElement('Click on a letter to get started.');
         }
 
         getStyle(fontSize) {
@@ -374,7 +376,7 @@ $(document).ready(function() {
             for (var i = 0; i < grid.length; i++) {
                 var innerArray = [];
                 for (var k = 0; k < grid[i].length; k++) {
-                    if (grid[i][k] !== ' '){ 
+                    if (grid[i][k] !== ' '){
                         innerArray.push(new Tile(k, i, grid[i][k], this.container, this));
                     }
                     else {
@@ -383,7 +385,7 @@ $(document).ready(function() {
                 }
                 this.grid.push(innerArray)
             }
-            
+
             this.words = words;
             snakeCreator = new SnakeFactory(snakeContainer, this);
         }
@@ -467,7 +469,7 @@ $(document).ready(function() {
                 this.snake.die();
                 return;
             }
-            
+
             if (this.winWord == snakeName) {
                 this.snake.disableControls();
                 alert("You win!");
